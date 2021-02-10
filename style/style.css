@@ -47,9 +47,13 @@ a {
     color: white;
 }
 
-button {
+button, input, select {
     border: none;
     outline: none;
+}
+
+button:focus, input:focus, select:focus{
+    box-shadow: 0 0 3px 3px white;
 }
 /* Layout */
 .main-container {

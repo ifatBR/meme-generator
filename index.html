@@ -6,6 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>meme generator</title>
         <link rel="stylesheet" href="style/style.css" />
+        <!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
+        <link href="fonts/impact/impact.ttf" rel="stylesheet" />
     </head>
     <body onload="init()">
         <div class="main-screen" onclick="onToggleMenu()"></div>
@@ -22,51 +24,52 @@
 
         <main class="main-container">
             <!-- <section class="meme-editor"> -->
-                <section class="meme-editor main-container flex space-between wrap hide">
-                    <div class="canvas-container-heilo round-corners">
-                        <div class="canvas-container round-corners">
-                            <canvas id="main-canvas" width="400" height="400"></canvas>
-                        </div>
+            <section class="meme-editor main-container flex space-between wrap">
+                <div class="canvas-container-heilo round-corners">
+                    <div class="canvas-container round-corners">
+                        <canvas id="main-canvas" width="400" height="400"></canvas>
                     </div>
-                    <section class="cntrls-container round-corners">
-                        <!-- <form class="controllers"> -->
-                        <input type="text" class="meme-txt" name="meme-txt-1" oninput="onEditMemeText(this, 0)" />
-                        <input type="text" class="meme-txt" name="meme-txt-2" oninput="onEditMemeText(this, 1)" />
-                        <div class="ctrl-btns flex justify-center">
-                            <button class="ctrl-btn fa-btn up" onclick="onMoveCurrLn(-5)"></button>
-                            <button class="ctrl-btn fa-btn down" onclick="onMoveCurrLn(5)"></button>
-                            <!-- <button onclick="onSwitchLines()">switch lns</button> -->
-                            <button class="ctrl-btn fa-btn add-ln"></button>
-                            <button class="ctrl-btn fa-btn delete"></button>
-                        </div>
-                        <!-- </form> -->
-                        <div class="edit-font grid">
-                            <button class="ctrl-btn bigger" onclick="onChangeFontSize(2)">A</button>
-                            <button class="ctrl-btn smaller" onclick="onChangeFontSize(-2)">A</button>
-                            <button class="ctrl-btn fa-btn left"></button>
-                            <button class="ctrl-btn fa-btn center"></button>
-                            <button class="ctrl-btn fa-btn right"></button>
-                            <select class="select-font" name="select-font">
-                                <option>font1</option>
-                                <option>font2</option>
-                                <option>font3</option>
-                            </select>
-                            <button class="ctrl-btn underline">S</button>
-                            <button class="ctrl-btn color"><input type="color" /></button>
-                        </div>
-                        <div>bonus steackers</div>
-                        <div>
-                            bonus share&download
-                            <a href="#" onclick="downloadCanvas(this)" download="">Download</a>
-                        </div>
-                    </section>
+                </div>
+                <section class="cntrls-container round-corners">
+                    <!-- <form class="controllers"> -->
+                    <input type="text" class="meme-txt" name="meme-txt" oninput="onEditMemeText(this)" />
+                    <!-- <input type="text" class="meme-txt" name="meme-txt-1" oninput="onEditMemeText(this, 0)" />
+                    <input type="text" class="meme-txt" name="meme-txt-2" oninput="onEditMemeText(this, 1)" /> -->
+                    <div class="ctrl-btns flex justify-center">
+                        <button class="ctrl-btn fa-btn up" onclick="onMoveCurrLn(-5)"></button>
+                        <button class="ctrl-btn fa-btn down" onclick="onMoveCurrLn(5)"></button>
+                        <!-- <button onclick="onSwitchLines()">switch lns</button> -->
+                        <button class="ctrl-btn fa-btn add-ln" onclick="onAddLine()"></button>
+                        <button class="ctrl-btn fa-btn delete" onclick="onDeleteLine()"></button>
+                    </div>
+                    <!-- </form> -->
+                    <div class="edit-font grid">
+                        <button class="ctrl-btn bigger" onclick="onChangeFontSize(2)">A</button>
+                        <button class="ctrl-btn smaller" onclick="onChangeFontSize(-2)">A</button>
+                        <button class="ctrl-btn fa-btn left" onclick="onChangeAlign('left')"></button>
+                        <button class="ctrl-btn fa-btn center" onclick="onChangeAlign('center')"></button>
+                        <button class="ctrl-btn fa-btn right" onclick="onChangeAlign('right')"></button>
+                        <select class="select-font" name="select-font">
+                            <option>font1</option>
+                            <option>font2</option>
+                            <option>font3</option>
+                        </select>
+                        <button class="ctrl-btn underline" onclick="onAddUnderline()">S</button>
+                        <button class="ctrl-btn color" ><input type="color" onchange="onSelectColor(this)" value="#cc2e2e"/></button>
+                    </div>
+                    <div>bonus steackers</div>
+                    <div>
+                        bonus share&download
+                        <a href="#" onclick="downloadCanvas(this)" download="">Download</a>
+                    </div>
                 </section>
+            </section>
             <!-- </section> -->
 
             <section class="gallery-container">
                 <header class="gallery-header flex align-center wrap justify-center">
                     <form class="search-form" onsubmit="onSearchImg(event)">
-                        <input type="search" class="search" name="search"  placeholder="Search">
+                        <input type="search" class="search" name="search" placeholder="Search" />
                         <button class="search-btn"></button>
                     </form>
                     <div class="trandy-words"></div>

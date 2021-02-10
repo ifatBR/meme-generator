@@ -1,7 +1,7 @@
 'use strict';
 var gElCanvas;
 var gCtx;
-var gCurrLnIdx = 0;
+var gCurrLnIdx;
 const gTouchEvs = ['touchstart', 'touchmove', 'touchend'];
 
 function init() {
@@ -25,14 +25,53 @@ function onChooseImg(id) {
     // setTimeout(renderCanvas,5000);
 }
 
-function onEditMemeText(elTextInput, lnIdx) {
-    const txt = elTextInput.value;
-    updateMemeTxt(lnIdx, txt);
+function onAddLine(){
+    createNewLine(gElCanvas.width/2);
+    gCurrLnIdx = getLinesCount()-1;
+    emptyMemeTxtInput();
+    renderCanvas()
+}
+
+function onDeleteLine(){
+    deleteLine(gCurrLnIdx);
+    gCurrLnIdx = 0;
+    emptyMemeTxtInput();
+    if(getLinesCount()===0) gCurrLnIdx = undefined;
     renderCanvas();
 }
 
+function onEditMemeText(elTextInput) {
+    if(gCurrLnIdx===undefined) return;
+    const txt = elTextInput.value;
+    updateMemeTxt(gCurrLnIdx, txt);
+    renderCanvas();
+}
+// function onEditMemeText(elTextInput, lnIdx) {
+//     const txt = elTextInput.value;
+//     updateMemeTxt(lnIdx, txt);
+//     renderCanvas();
+// }
+
 function onChangeFontSize(sizeDiff) {
     changeFontSize(gCurrLnIdx, sizeDiff);
+    renderCanvas();
+}
+function onChangeAlign(align){
+    changeAlign(gCurrLnIdx, align, gElCanvas.width);
+    renderCanvas();
+}
+
+function onAddUnderline(){
+    const lnObj = getLnObjectById(gCurrLnIdx);
+    const {x,y,width} = lnObj;
+    gCtx.beginPath();
+}
+
+function onSelectColor(elColorInput){
+    const color = elColorInput.value;
+    console.log(color);
+    if(gCurrLnIdx === undefined) return;
+    changeColor(gCurrLnIdx, color);
     renderCanvas();
 }
 
@@ -42,7 +81,7 @@ function renderCanvas() {
     img.onload = () => {
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
         addMemesText();
-        showFocusBorder(gCurrLnIdx)
+        if(gCurrLnIdx>=0) showFocusBorder(gCurrLnIdx)
     };
 }
 
@@ -51,11 +90,12 @@ function addMemesText() {
     lnsObjs.forEach((lnObj, lnIdx) => {
         const { txt, x, y } = lnObj;
         gCtx.lineWidth = 1;
-        gCtx.strokeStyle = 'red';
-        gCtx.fillStyle = 'white';
+        
         const fontSize = lnObj.size + 'px';
         gCtx.font = fontSize + ' impact';
         gCtx.textAlign = lnObj.align;
+        gCtx.strokeStyle = lnObj.color;
+        gCtx.fillStyle = 'white';
         gCtx.fillText(txt, x, y);
         gCtx.strokeText(txt, x, y);
         updateTxtWidth(lnIdx, gCtx.measureText(txt).width);
@@ -80,7 +120,12 @@ function showFocusBorder(lnIdx) {
     const { x, y, size, width } = lnObj;
     gCtx.lineWidth = 2;
     gCtx.beginPath();
-    gCtx.rect((x - width / 2) - 5, (y-size) -3, width + 10, size + 10);
+    
+    let widthOffst = -width;
+    if (lnObj.align ==='left') widthOffst = 0;
+    else if (lnObj.align ==='center') widthOffst = -width/2;
+
+    gCtx.rect((x + widthOffst) - 5, (y-(size*1.25)), width + 10, size *1.75);
     gCtx.strokeStyle = 'white';
     gCtx.stroke();
 }
@@ -91,6 +136,14 @@ function resizeCanvas() {
     gElCanvas.height = elContainer.offsetHeight
 }
 
+function updateMemeTxtInput(){
+    document.querySelector('[name=meme-txt]').value = getLnObjectById(gCurrLnIdx).txt;
+}
+
+function emptyMemeTxtInput(){
+    document.querySelector('[name=meme-txt]').value = '';
+
+}
 //Gallery functions
 function onOpenGallery(){
     document.querySelector('.gallery-container').classList.remove('hide');
@@ -107,6 +160,7 @@ function onSearchImg(ev){
 function onToggleMenu(){
     document.body.classList.toggle('open-menu');
 }
+
 
 //For when I want to add download
 function downloadCanvas(elLink) {
@@ -146,6 +200,7 @@ function onDown(ev) {
     const clickedLineIdx = getClickedLine(pos);
     if (clickedLineIdx === undefined) return;
     updateCurrLine(clickedLineIdx);
+    updateMemeTxtInput();
     // if (!isCirlceClicked(pos)) return
     // gCircle.isDragging = true
     // gStartPos = pos
