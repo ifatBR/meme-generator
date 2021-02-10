@@ -7,8 +7,45 @@
     <title>meme generator</title>
     <link rel="stylesheet" href="style/style.css">
 </head>
-<body>
-    <script src="main-service.js"></script>
-    <script src="main-controller.js"></script>
+<body onload="init()">
+    <header class="">
+        <h2>Logo</h2>
+        <ul>
+        <li><a href="#">Gallery</a></li>
+        <li><a href="#">About</a></li>
+    </ul>
+    </header>
+    <main>
+        <section class="canvas-container">
+            <canvas id="main-canvas" width="400" height="400"></canvas>
+        </section>
+
+        <section class="ctrlers">
+            <!-- <form class="controllers"> -->
+                <input type="text" name="meme-lns" oninput="onEditMemeText(this)">
+                <button>switch lns</button>
+                <button>add ln</button>
+                <button>delete ln</button>
+            <!-- </form> -->
+            <div class="edit-font">
+                <button>A+</button>
+                <button>A-</button>
+                <button>algn left</button>
+                <button>algn center</button>
+                <button>algn right</button>
+                <h3>select font</h3>
+                <button>underline</button>
+                <button>color</button>
+            </div>
+            <div>bonus steackers</div>
+            <div>bonus share&download
+            <a href="#" onclick="downloadCanvas(this)" download="">Download</a>
+
+            </div>
+
+        </section>
+    </main>
+    <script src="js/memeService.js"></script>
+    <script src="js/mainController.js"></script>
 </body>
 </html>
