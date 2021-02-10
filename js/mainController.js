@@ -5,12 +5,7 @@ var gCurrLnIdx = 0;
 const gTouchEvs = ['touchstart', 'touchmove', 'touchend'];
 
 function init() {
-    initImageGallery();
-    gElCanvas = document.getElementById('main-canvas');
-    gCtx = gElCanvas.getContext('2d');
-    addListeners();
-    renderCanvas();
-    resizeCanvas()
+    initImageGallery(); 
 }
 
 function initImageGallery() {
@@ -19,7 +14,15 @@ function initImageGallery() {
 
 function onChooseImg(id) {
     updateMemeImage(id);
+    document.querySelector('.gallery-container').classList.add('hide');
+    document.querySelector('.meme-editor').classList.remove('hide');
+    gElCanvas = document.getElementById('main-canvas');
+    gCtx = gElCanvas.getContext('2d');
+    addListeners();
+
     renderCanvas();
+    resizeCanvas()
+    // setTimeout(renderCanvas,5000);
 }
 
 function onEditMemeText(elTextInput, lnIdx) {
@@ -37,9 +40,7 @@ function renderCanvas() {
     const img = new Image();
     img.src = getImgSrc();
     img.onload = () => {
-        gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height); //img,x,y,xend,yend
-        // const txt1 = getLnObjectById(0).txt;
-        // const txt2 = getLnObjectById(1).txt;
+        gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
         addMemesText();
         showFocusBorder(gCurrLnIdx)
     };
@@ -90,6 +91,17 @@ function resizeCanvas() {
     gElCanvas.height = elContainer.offsetHeight
 }
 
+//Gallery functions
+function onOpenGallery(){
+    document.querySelector('.gallery-container').classList.remove('hide');
+    document.querySelector('.meme-editor').classList.add('hide');
+}
+
+function onSearchImg(ev){
+    ev.preventDefault();
+    const searchWords = document.querySelector('.search').value;
+    console.log(searchWords);
+}
 
 
 //For when I want to add download
