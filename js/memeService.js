@@ -17,8 +17,9 @@ var gMeme = {
 
 function createImageGallery(){
     for(var i=1; i<=18; i++){
-        gImgs.push({id:i, url:`../img/${i}.jpg`})
+        gImgs.push({id:i, url:`img/${i}.jpg`})
     }
+    console.log('gImgs:', gImgs)
     return gImgs;
 }
 
