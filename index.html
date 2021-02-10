@@ -23,14 +23,15 @@
 
         <section class="controllers">
             <!-- <form class="controllers"> -->
-                <input type="text" name="meme-lns" oninput="onEditMemeText(this)">
+                <input type="text" name="meme-txt" oninput="onEditMemeText(this, 0)">
+                <input type="text" name="meme-txt" oninput="onEditMemeText(this, 1)">
                 <button>switch lns</button>
                 <button>add ln</button>
                 <button>delete ln</button>
             <!-- </form> -->
             <div class="edit-font">
-                <button>A+</button>
-                <button>A-</button>
+                <button onclick="onChangeFontSize(2)">A+</button>
+                <button onclick="onChangeFontSize(-2)">A-</button>
                 <button>algn left</button>
                 <button>algn center</button>
                 <button>algn right</button>
