@@ -18,6 +18,16 @@
     src: url(../fonts/poppins/Poppins-SemiBold.ttf);
 }
 
+@font-face{
+    font-family: fa-regular;
+    src: url(../fonts/fa/fa-regular-400.ttf)
+}
+
+@font-face{
+    font-family: fa-solid;
+    src: url(../fonts/fa/fa-solid-900.ttf)
+}
+
 * {
     box-sizing: border-box;
 }
@@ -35,24 +45,27 @@ html {
     color: #ffffff;
 }
 
-header {
-    /* width: 1260px; */
-    background-image: linear-gradient(90deg, #0f9ab4, #30bb72);
-    border-radius: 3em;
-    margin: 12px 0 20px;
-}
 
 a{
     text-decoration: none;
     color:white;
 }
 
+button{
+    border:none;
+    outline:none;
+}
 /* Layout */
 .main-container{
     max-width: 1060px;
     margin:auto;
 }
+
 /*Componenets*/
+/* Meme Editor */
+.main-header {
+    margin: 12px 0 20px;
+}
 
 .logo{
     margin-left:120px;
@@ -92,7 +105,7 @@ a{
     background-color: #383b42;
     width: 525px;
     height:500px;
-    padding:25px 40px;
+    padding:20px 30px;
 }
 
 .meme-txt{
@@ -105,17 +118,179 @@ a{
     border:5px outset;
     width:100%;
     margin-bottom:15px;
+
 }
 
-.gallery-item {
-    width: 30%;
+.ctrl-btn{
+    border-radius: 10px;
+    border:none; 
+    padding: 0px;
+    width: 55px;
+    height: 55px;  
+    font-family: poppins-bold, sans-serif;
+    font-size:2em;
+    vertical-align:top;
 }
 
-#main-canvas {
-    border: 1px solid black;
+.ctrl-btns{
+    margin-bottom: 25px;
 }
 
-/* Hlpers */
+.ctrl-btns > *{
+    color:white;
+    /* background-color: blueviolet; */
+    border-top: 5px outset;
+    border-bottom: 5px outset;   
+}
+
+.ctrl-btns>*:not(:last-child){
+    margin-inline-end: 20px;
+}
+
+.up, .down{
+    background-image: linear-gradient(90deg, #5abed8,#2dadca,#5abed8);       
+    border-top-color:  #81d0e4;
+    border-bottom-color:#41b2cf;
+}
+
+.add-ln{
+    background-image: linear-gradient(90deg,#41e359, #39bd4d,#41e359);       
+    border-top-color:  #79f78c;
+    border-bottom-color:#41e359;
+}
+
+.delete{
+    background-image: linear-gradient(90deg, #d42437, #ea4736,#d42437);       
+    border-top-color:  #df6a5b;
+    border-bottom-color:#db4141;
+}
+
+.up::before{
+    content: '\f102';
+}
+
+.down::before{
+    content: '\f103';
+}
+
+.add-ln::before{   
+    content: '\f067';
+}
+
+.delete::before{
+    content: '\f1f8';
+}
+
+.edit-font{
+    background-color: #19a59f;
+    padding: 15px;
+    gap: 15px 30px;
+    grid-template-columns: repeat(5,1fr);
+    border-radius: 15px;
+}
+
+
+.bigger::after{
+    vertical-align:top;
+    content:'+';
+    font-size:0.8em;
+}
+
+.smaller::after{
+    vertical-align:top;
+    content:'-';
+    font-size:0.9em;
+}
+
+.left::before{
+    content:'\f036'
+}
+
+.right::before{
+    content:'\f038'
+}
+
+.center::before{
+    content:'\f037'
+}
+
+.select-font{
+    height: 55px;
+    width: 235px;
+    border-radius: 10px;
+    vertical-align:top;
+    grid-column: span 3;
+    font-size:1.5em;
+    padding-left: 30px;
+}
+
+.underline{
+    text-decoration: underline;
+}
+
+.color input{
+    display:block;
+    margin:auto;
+    height: 90%;
+    width: 90%;
+    border: none;
+    background-color: transparent;
+    outline: none;
+}
+
+
+
+/* Image Gallery */
+
+.gallery-container{
+    background-color: #383b42;
+    border-radius:10px;
+}
+
+.gallery-header{
+    padding:10px;
+}
+
+.gallery-header>*:not(:last-child){
+    margin-inline-end: 20px;
+}
+
+.search, .trandy-words{
+    height: 50px;
+    width: 530px;
+    border-radius: 2em;;
+}
+
+.gallery-container .trandy-words{
+    background-color: #87898d;
+}
+
+.gallery-container .more{
+    color:white;
+    font-size:1em;
+    padding: 5px 25px ;
+    height: 35px;
+}
+
+.img-container{
+    grid-template-columns: repeat(auto-fit, 200px);
+    grid-auto-rows: 200px;
+    gap: 30px;
+    padding: 10px 55px;
+}
+
+.img-item {
+    width: 100%;
+    border-radius: 10px;
+}
+
+
+/* Helpers */
+
+.gradient-bacground{
+    background-image: linear-gradient(90deg, #0f9ab4, #30bb72);
+    border-radius: 3em;
+}
 
 .flex {
     display: flex;
@@ -126,19 +301,34 @@ a{
     justify-content: space-between;
 }
 
-.flex.justify-center {
+.justify-center {
     justify-content: center;
 }
 
-.flex.align-center {
+.align-center {
     align-items: center;
+}
+
+.flex.wrap{
+    flex-wrap: wrap;
+}
+
+.grid{
+    display:grid;
 }
 
 .round-corners{
     border-radius: 30px;
 }
 
+.fa-btn{
+    font-family:fa-solid;
+    font-size:1.5em;
+}
 
+.hide{
+    display:none;
+}
 /* list helpers */
 
 .clean-list{

@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="style/style.css" />
     </head>
     <body onload="init()">
-        <header class="">
+        <header class="main-header gradient-bacground">
             <div class="main-container flex align-center space-between">
                 <h2 class="logo">Logo</h2>
                 <ul class="main-nav clean-list flex justify-center">
@@ -19,7 +19,7 @@
         </header>
 
         <main class="main-container">
-            <section class="meme-editor">
+            <section class="meme-editor hide">
                 <section class="meme-editor-container main-container flex space-between">
                     <div class="canvas-container-heilo round-corners">
                         <div class="canvas-container round-corners">
@@ -30,25 +30,27 @@
                         <!-- <form class="controllers"> -->
                         <input type="text" class="meme-txt" name="meme-txt-1" oninput="onEditMemeText(this, 0)" />
                         <input type="text" class="meme-txt" name="meme-txt-2" oninput="onEditMemeText(this, 1)" />
-                        <button class="ctrl-btn" onclick="onMoveCurrLn(-5)">up</button>
-                        <button class="ctrl-btn" onclick="onMoveCurrLn(5)">down</button>
-                        <!-- <button onclick="onSwitchLines()">switch lns</button> -->
-                        <button class="ctrl-btn">add ln</button>
-                        <button class="ctrl-btn">delete ln</button>
+                        <div class="ctrl-btns flex justify-center">
+                            <button class="ctrl-btn fa-btn up" onclick="onMoveCurrLn(-5)"></button>
+                            <button class="ctrl-btn fa-btn down" onclick="onMoveCurrLn(5)"></button>
+                            <!-- <button onclick="onSwitchLines()">switch lns</button> -->
+                            <button class="ctrl-btn fa-btn add-ln"></button>
+                            <button class="ctrl-btn fa-btn delete"></button>
+                        </div>
                         <!-- </form> -->
-                        <div class="edit-font">
-                            <button onclick="onChangeFontSize(2)">A+</button>
-                            <button onclick="onChangeFontSize(-2)">A-</button>
-                            <button>algn left</button>
-                            <button>algn center</button>
-                            <button>algn right</button>
-                            <select name="select-font">
+                        <div class="edit-font grid">
+                            <button class="ctrl-btn bigger" onclick="onChangeFontSize(2)">A</button>
+                            <button class="ctrl-btn smaller" onclick="onChangeFontSize(-2)">A</button>
+                            <button class="ctrl-btn fa-btn left"></button>
+                            <button class="ctrl-btn fa-btn center"></button>
+                            <button class="ctrl-btn fa-btn right"></button>
+                            <select class="select-font" name="select-font">
                                 <option>font1</option>
                                 <option>font2</option>
                                 <option>font3</option>
                             </select>
-                            <button>underline</button>
-                            <button>color</button>
+                            <button class="ctrl-btn underline">S</button>
+                            <button class="ctrl-btn color"><input type="color" /></button>
                         </div>
                         <div>bonus steackers</div>
                         <div>
@@ -59,9 +61,16 @@
                 </section>
             </section>
 
-            <section class="gallery" style="display: none">
-                <img class="gallery-item" src="img/5.jpg" onclick="onChooseImg(5)" />
-                <img class="gallery-item" src="img/2.jpg" onclick="onChooseImg(2)" />
+            <section class="gallery-container">
+                <header class="gallery-header flex align-center">
+                    <input class="search" name="search"  type="search">
+                    <div class="trandy-words"></div>
+                    <button class="btn more gradient-bacground">More</button>
+                </header>
+                <section class="img-container main-container grid justify-center align-center">
+                    <img class="img-item" src="img/5.jpg" onclick="onChooseImg(5)" />
+                    <img class="img-item" src="img/2.jpg" onclick="onChooseImg(2)" />
+                </section>
             </section>
         </main>
         <script src="js/memeService.js"></script>
