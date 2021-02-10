@@ -7,8 +7,8 @@ var gMeme = {
     selectedLineIdx: 0,
     lines: [
         {
-            txt: '',
-            txtWidth:0,
+            txt: 'ln 1',
+            width:0,
             size: 20,
             align: 'center',
             color: 'blue',
@@ -16,8 +16,8 @@ var gMeme = {
             y:40
         },
         {
-            txt: '',
-            txtWidth:0,
+            txt: 'ln 2',
+            width:0,
             size: 20,
             align: 'center',
             color: 'blue',
@@ -60,30 +60,39 @@ function updateMemeTxt(lnIdx,txt){
 }
 
 function updateTxtWidth(lnIdx, txtWidth){
-    gMeme.lines[lnIdx].txtWidth = txtWidth;
+    gMeme.lines[lnIdx].width = txtWidth;
 }
 
 function getImgIdxById(){
     return gImgs.findIndex((img) => gMeme.selectedImgId === img.id);
 }
 
-function logMeme(){
-    console.log('gMeme:', gMeme)
+function getAllLines(){
+    return gMeme.lines;
+}
+
+function moveLineY(lnIdx, moveDiff){
+    gMeme.lines[lnIdx].y += moveDiff;
+    // console.log('gMeme.lines[lnIdx]',gMeme.lines[lnIdx]);
 }
 
 function getClickedLine(clickedPos) {
-    console.log('clicke pos y',clickedPos.y)
     const idx = gMeme.lines.findIndex((ln) => {
-        return (ln.x-(ln.txtWidth/2)) < clickedPos.x &&
-        (ln.x+(ln.txtWidth/2)) > clickedPos.x &&
-        (ln.y-(ln.size/2)) < clickedPos.y &&
-        (ln.y+(ln.size/2)) > clickedPos.y
+        return (ln.x-(ln.width/2)) < clickedPos.x &&
+        (ln.x+(ln.width/2)) > clickedPos.x &&
+        (ln.y-(ln.size) -5) < clickedPos.y &&
+        (ln.y + 10) > clickedPos.y
     });
-    console.log('idx:',idx);
-
-    if(!idx) return;
-    return gMeme.lines[idx];
+    // console.log('idx',idx);
+    if(idx < 0) return;
+    return idx;
+    // return gMeme.lines[idx];
     // const { pos } = gCircle
     // const distance = Math.sqrt((pos.x - clickedPos.x) ** 2 + (pos.y - clickedPos.y) ** 2)
     // return distance <= gCircle.size
+}
+
+//privat funcs\\
+function _logMeme(){
+    console.log('gMeme:', gMeme)
 }

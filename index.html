@@ -25,7 +25,9 @@
             <!-- <form class="controllers"> -->
                 <input type="text" name="meme-txt" oninput="onEditMemeText(this, 0)">
                 <input type="text" name="meme-txt" oninput="onEditMemeText(this, 1)">
-                <button>switch lns</button>
+                <button onclick="onMoveCurrLn(-5)">up</button>
+                <button onclick="onMoveCurrLn(5)">down</button>
+                <!-- <button onclick="onSwitchLines()">switch lns</button> -->
                 <button>add ln</button>
                 <button>delete ln</button>
             <!-- </form> -->
