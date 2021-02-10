@@ -1,62 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>meme generator</title>
-    <link rel="stylesheet" href="style/style.css">
-</head>
-<body onload="init()">
-    <header class="">
-        <h2>Logo</h2>
-        <ul>
-        <li><a href="#">Gallery</a></li>
-        <li><a href="#">About</a></li>
-    </ul>
-    </header>
-
-    <main class="meme-editor">
-        <section class="canvas-container">
-            <canvas id="main-canvas" width="400" height="400"></canvas>
-        </section>
-
-        <section class="controllers">
-            <!-- <form class="controllers"> -->
-                <input type="text" name="meme-txt" oninput="onEditMemeText(this, 0)">
-                <input type="text" name="meme-txt" oninput="onEditMemeText(this, 1)">
-                <button onclick="onMoveCurrLn(-5)">up</button>
-                <button onclick="onMoveCurrLn(5)">down</button>
-                <!-- <button onclick="onSwitchLines()">switch lns</button> -->
-                <button>add ln</button>
-                <button>delete ln</button>
-            <!-- </form> -->
-            <div class="edit-font">
-                <button onclick="onChangeFontSize(2)">A+</button>
-                <button onclick="onChangeFontSize(-2)">A-</button>
-                <button>algn left</button>
-                <button>algn center</button>
-                <button>algn right</button>
-                <select name="select-font">
-                    <option>font1</option>
-                    <option>font2</option>
-                    <option>font3</option>
-                </select>
-                <button>underline</button>
-                <button>color</button>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>meme generator</title>
+        <link rel="stylesheet" href="style/style.css" />
+    </head>
+    <body onload="init()">
+        <header class="">
+            <div class="main-container flex align-center space-between">
+                <h2 class="logo">Logo</h2>
+                <ul class="main-nav clean-list flex justify-center">
+                    <li><a href="#">Gallery</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
             </div>
-            <div>bonus steackers</div>
-            <div>bonus share&download
-            <a href="#" onclick="downloadCanvas(this)" download="">Download</a>
-            </div>
-        </section>
-    </main>
+        </header>
 
-    <main class="gallery">
-        <img class="gallery-item" src="img/5.jpg" onclick="onChooseImg(5)">
-        <img class="gallery-item" src="img/2.jpg" onclick="onChooseImg(2)">
-    </main>
-    <script src="js/memeService.js"></script>
-    <script src="js/mainController.js"></script>
-</body>
+        <main class="main-container">
+            <section class="meme-editor">
+                <section class="meme-editor-container main-container flex space-between">
+                    <div class="canvas-container-heilo round-corners">
+                        <div class="canvas-container round-corners">
+                            <canvas id="main-canvas" width="400" height="400"></canvas>
+                        </div>
+                    </div>
+                    <section class="cntrls-container round-corners">
+                        <!-- <form class="controllers"> -->
+                        <input type="text" class="meme-txt" name="meme-txt-1" oninput="onEditMemeText(this, 0)" />
+                        <input type="text" class="meme-txt" name="meme-txt-2" oninput="onEditMemeText(this, 1)" />
+                        <button class="ctrl-btn" onclick="onMoveCurrLn(-5)">up</button>
+                        <button class="ctrl-btn" onclick="onMoveCurrLn(5)">down</button>
+                        <!-- <button onclick="onSwitchLines()">switch lns</button> -->
+                        <button class="ctrl-btn">add ln</button>
+                        <button class="ctrl-btn">delete ln</button>
+                        <!-- </form> -->
+                        <div class="edit-font">
+                            <button onclick="onChangeFontSize(2)">A+</button>
+                            <button onclick="onChangeFontSize(-2)">A-</button>
+                            <button>algn left</button>
+                            <button>algn center</button>
+                            <button>algn right</button>
+                            <select name="select-font">
+                                <option>font1</option>
+                                <option>font2</option>
+                                <option>font3</option>
+                            </select>
+                            <button>underline</button>
+                            <button>color</button>
+                        </div>
+                        <div>bonus steackers</div>
+                        <div>
+                            bonus share&download
+                            <a href="#" onclick="downloadCanvas(this)" download="">Download</a>
+                        </div>
+                    </section>
+                </section>
+            </section>
+
+            <section class="gallery" style="display: none">
+                <img class="gallery-item" src="img/5.jpg" onclick="onChooseImg(5)" />
+                <img class="gallery-item" src="img/2.jpg" onclick="onChooseImg(2)" />
+            </section>
+        </main>
+        <script src="js/memeService.js"></script>
+        <script src="js/mainController.js"></script>
+    </body>
 </html>

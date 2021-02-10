@@ -3,18 +3,146 @@
     src: url(../fonts/impact/impact.ttf);
 }
 
-*{
+@font-face {
+    font-family: poppins;
+    src: url(../fonts/poppins/Poppins-Medium.ttf);
+
+}
+@font-face {
+    font-family: poppins-light;
+    src: url(../fonts/poppins/Poppins-Light.ttf);
+
+}
+@font-face {
+    font-family: poppins-bold;
+    src: url(../fonts/poppins/Poppins-SemiBold.ttf);
+}
+
+* {
     box-sizing: border-box;
 }
 
-body{
-    margin:0;
+body {
+    margin: 0;
+    background-color: #22252c;
+    /* background-image: url(../img/background.jpg); */
+    background-size: cover;
+
 }
 
-#main-canvas{
+html {
+    font-family: poppins;
+    color: #ffffff;
+}
+
+header {
+    /* width: 1260px; */
+    background-image: linear-gradient(90deg, #0f9ab4, #30bb72);
+    border-radius: 3em;
+    margin: 12px 0 20px;
+}
+
+a{
+    text-decoration: none;
+    color:white;
+}
+
+/* Layout */
+.main-container{
+    max-width: 1060px;
+    margin:auto;
+}
+/*Componenets*/
+
+.logo{
+    margin-left:120px;
+    font-weight:500;
+    font-size: 1.062em;
+    
+}
+
+.main-nav{
+    width: 50%;
+}
+
+.main-nav>*:not(:last-child){
+    margin-inline-end: 60px;
+}
+
+.meme-editor {
+    margin: auto;
+}
+
+.canvas-container-heilo{
+    padding:7px;
+    background-color: rgba(255, 255, 255, 0.116);
+    width:490px;
+    height:500px;
+
+}
+
+.canvas-container{
+    width: 100%;
+    height: 100%;
+    -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
+}
+
+
+.cntrls-container{
+    background-color: #383b42;
+    width: 525px;
+    height:500px;
+    padding:25px 40px;
+}
+
+.meme-txt{
+    display:block;
+    background-color: ebeef3;
+    font-size: 1.125em;
+    padding: 15px 0;
+    text-align: center;
+    border-radius: 2em;
+    border:5px outset;
+    width:100%;
+    margin-bottom:15px;
+}
+
+.gallery-item {
+    width: 30%;
+}
+
+#main-canvas {
     border: 1px solid black;
 }
 
-.gallery-item{
-    width: 30%;
+/* Hlpers */
+
+.flex {
+    display: flex;
+}
+
+
+.flex.space-between {
+    justify-content: space-between;
+}
+
+.flex.justify-center {
+    justify-content: center;
+}
+
+.flex.align-center {
+    align-items: center;
+}
+
+.round-corners{
+    border-radius: 30px;
+}
+
+
+/* list helpers */
+
+.clean-list{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
 }

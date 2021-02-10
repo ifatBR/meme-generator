@@ -7,9 +7,9 @@ var gMeme = {
     selectedLineIdx: 0,
     lines: [
         {
-            txt: 'ln 1',
+            txt: 'I can do this!!!',
             width:0,
-            size: 20,
+            size: 40,
             align: 'center',
             color: 'blue',
             x:200,
@@ -18,7 +18,7 @@ var gMeme = {
         {
             txt: 'ln 2',
             width:0,
-            size: 20,
+            size: 40,
             align: 'center',
             color: 'blue',
             x:200,

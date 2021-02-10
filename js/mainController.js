@@ -10,8 +10,7 @@ function init() {
     gCtx = gElCanvas.getContext('2d');
     addListeners();
     renderCanvas();
-    //TODO:  resizeCanvas()
-    //TODO: add event listener
+    resizeCanvas()
 }
 
 function initImageGallery() {
@@ -50,7 +49,7 @@ function addMemesText() {
     const lnsObjs = getAllLines();
     lnsObjs.forEach((lnObj, lnIdx) => {
         const { txt, x, y } = lnObj;
-        gCtx.lineWidth = 2;
+        gCtx.lineWidth = 1;
         gCtx.strokeStyle = 'red';
         gCtx.fillStyle = 'white';
         const fontSize = lnObj.size + 'px';
@@ -84,6 +83,13 @@ function showFocusBorder(lnIdx) {
     gCtx.strokeStyle = 'white';
     gCtx.stroke();
 }
+
+function resizeCanvas() {
+    const elContainer = document.querySelector('.canvas-container');
+    gElCanvas.width = elContainer.offsetWidth
+    gElCanvas.height = elContainer.offsetHeight
+}
+
 
 
 //For when I want to add download
@@ -163,3 +169,4 @@ function getEvPos(ev) {
     }
     return pos;
 }
+
