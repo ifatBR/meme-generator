@@ -68,6 +68,9 @@ button {
     font-weight: 500;
     font-size: 1.062em;
 }
+.menu-btn {
+    display: none;
+}
 
 .main-nav {
     width: 50%;
@@ -207,8 +210,6 @@ button {
 }
 
 .select-font {
-    height: 55px;
-    width: 235px;
     border-radius: 10px;
     vertical-align: top;
     grid-column: span 3;
@@ -333,6 +334,10 @@ button {
     align-items: center;
 }
 
+.align-start {
+    align-items: start;
+}
+
 .flex.wrap {
     flex-wrap: wrap;
 }
@@ -365,46 +370,76 @@ button {
     .main-container {
         width: 840px;
     }
-    .canvas-container-heilo{
+
+    .canvas-container-heilo {
         width: 400px;
         height: 400px;
     }
 
-    .cntrls-container{
-    width: 400px;
-    height: 80vh;
+    .cntrls-container {
+        width: 400px;
+        height: 400px;
     }
 
-    .ctrl-btn{
+    .meme-txt {
+        padding: 10px 0;
+    }
+
+    .ctrl-btn {
         height: 45px;
         width: 45px;
         font-size: 1.25em;
     }
 
     .edit-font {
-        padding: 15px;
+        padding: 10px;
         gap: 15px 20px;
-        grid-template-columns: repeat(5, 1fr);
-        border-radius: 15px;
     }
 
-    .select-font{
+    /* .select-font{
         font-size: 1.25em;
         grid-column: span 3;
-    }
+    } */
 }
 
 @media (max-width: 860px) {
     .main-container {
         width: 630px;
     }
-    .gallery-header{
+
+    .meme-editor > * {
+        margin: auto;
+    }
+
+    .canvas-container-heilo {
+        width: 350px;
+        height: 350px;
+        margin-bottom: 20px;
+    }
+
+    .cntrls-container {
+        width: 350px;
+        height: 450px;
+        padding: 20px 20px;
+    }
+
+    .meme-txt {
+        padding: 5px 0;
+    }
+
+    .edit-font {
+        padding: 10px;
+        gap: 10px 10px;
+        align-content: center;
+    }
+
+    .gallery-header {
         margin-bottom: 25px;
     }
     .gallery-container .search-form {
         margin-right: 0;
         margin-bottom: 20px;
-        width:100%
+        width: 100%;
     }
 
     .img-container {
@@ -416,11 +451,79 @@ button {
 @media (max-width: 630px) {
     .main-container {
         padding: 10px;
-        width: 470px;
+        width: 450px;
     }
 
-    .main-header{
+    .main-header {
         border-radius: unset;
+    }
+
+    .main-nav {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 350px;
+        height: 100vh;
+        flex-direction: column;
+        justify-content: start;
+        padding-top: 0px;
+        background-image: linear-gradient(90deg, rgba(15, 155, 179, 0.85), rgba(48, 187, 113, 0.85));
+        background-color: rgba(37, 37, 37, 0.9);
+        z-index: 1;
+        transform: translateX(100%);
+        transition: transform 0.4s ease-out;
+    }
+
+    body.open-menu .main-screen {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        opacity: 0;
+        visibility: hidden;
+        background-color: rgba(0, 0, 0, 0.7);
+        cursor: pointer;
+        transition: opacity 0.5s, visibility 0.5s;
+    }
+
+    body.open-menu .main-screen {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .main-nav > *:not(:last-child) {
+        margin-inline-end: 0;
+    }
+
+    body.open-menu .main-nav {
+        transform: translateX(0);
+    }
+
+    .menu-btn {
+        display: inline-block;
+        font-size: 25px;
+        color: #149fa9;
+        background-color: white;
+        border-radius: 50%;
+        border: none;
+        outline: none;
+    }
+
+    .menu-btn::before {
+        content: '☰';
+    }
+
+    .main-nav > * {
+        border-bottom: 1px solid rgb(0, 0, 0);
+    }
+    .main-nav > * a {
+        display: flex;
+        margin: auto;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px;
+        height: 100%;
     }
 
     .logo {
@@ -430,25 +533,41 @@ button {
     .img-container {
         grid-template-columns: repeat(auto-fit, 120px);
         grid-auto-rows: 120px;
-        gap:15px;
+        gap: 15px;
     }
 
     .gallery-container .trandy-words {
-        height:35px;
+        height: 35px;
     }
 }
 
-@media (max-width:450px){
+@media (max-width: 470px) {
     .main-container {
         width: unset;
     }
+
+    .meme-editor {
+        padding: 0;
+    }
+
+    .canvas-container-heilo {
+        width: 320px;
+        height: 320px;
+        margin-bottom: 20px;
+    }
+
+    .cntrls-container {
+        width: 310px;
+        height: 350px;
+        padding: 10px 10px;
+    }
+
     .gallery-container .trandy-words {
         width: unset;
-
     }
-    .gallery-container .more{
-        height:30px;
-        padding: 0 10px;
 
+    .gallery-container .more {
+        height: 30px;
+        padding: 0 10px;
     }
 }

@@ -95,6 +95,7 @@ function resizeCanvas() {
 function onOpenGallery(){
     document.querySelector('.gallery-container').classList.remove('hide');
     document.querySelector('.meme-editor').classList.add('hide');
+    if(document.body.classList.contains('open-menu')) onToggleMenu();
 }
 
 function onSearchImg(ev){
@@ -103,6 +104,9 @@ function onSearchImg(ev){
     console.log(searchWords);
 }
 
+function onToggleMenu(){
+    document.body.classList.toggle('open-menu');
+}
 
 //For when I want to add download
 function downloadCanvas(elLink) {

@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="style/style.css" />
     </head>
     <body onload="init()">
+        <div class="main-screen" onclick="onToggleMenu()"></div>
         <header class="main-header gradient-background">
             <div class="main-container flex align-center space-between">
                 <h2 class="logo">LOGO</h2>
@@ -15,15 +16,16 @@
                     <li><a href="#" onclick="onOpenGallery()">Gallery</a></li>
                     <li><a href="#">About</a></li>
                 </ul>
+                <button class="menu-btn" onclick="onToggleMenu()"></button>
             </div>
         </header>
 
         <main class="main-container">
-            <section class="meme-editor">
-                <section class="meme-editor-container main-container flex space-between">
+            <!-- <section class="meme-editor"> -->
+                <section class="meme-editor main-container flex space-between wrap hide">
                     <div class="canvas-container-heilo round-corners">
                         <div class="canvas-container round-corners">
-                            <!-- <canvas id="main-canvas" width="400" height="400"></canvas> -->
+                            <canvas id="main-canvas" width="400" height="400"></canvas>
                         </div>
                     </div>
                     <section class="cntrls-container round-corners">
@@ -59,7 +61,7 @@
                         </div>
                     </section>
                 </section>
-            </section>
+            <!-- </section> -->
 
             <section class="gallery-container">
                 <header class="gallery-header flex align-center wrap justify-center">
