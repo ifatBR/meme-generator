@@ -3,10 +3,24 @@ var gElCanvas;
 var gCtx;
 
 function init() {
+    initImageGallery();
     gElCanvas = document.getElementById('main-canvas')
     gCtx = gElCanvas.getContext('2d')
-    // resizeCanvas()
     drawImgFromlocal()
+    //TODO:  resizeCanvas()
+    //TODO: add event listener
+
+}
+
+
+function initImageGallery(){
+    createImageGallery();
+    
+}
+
+function onChooseImg(id){
+    updateMemeImage(id);
+    drawImgFromlocal();
 
 }
 

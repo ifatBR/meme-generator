@@ -15,12 +15,13 @@
         <li><a href="#">About</a></li>
     </ul>
     </header>
-    <main>
+
+    <main class="meme-editor">
         <section class="canvas-container">
             <canvas id="main-canvas" width="400" height="400"></canvas>
         </section>
 
-        <section class="ctrlers">
+        <section class="controllers">
             <!-- <form class="controllers"> -->
                 <input type="text" name="meme-lns" oninput="onEditMemeText(this)">
                 <button>switch lns</button>
@@ -33,17 +34,24 @@
                 <button>algn left</button>
                 <button>algn center</button>
                 <button>algn right</button>
-                <h3>select font</h3>
+                <select name="select-font">
+                    <option>font1</option>
+                    <option>font2</option>
+                    <option>font3</option>
+                </select>
                 <button>underline</button>
                 <button>color</button>
             </div>
             <div>bonus steackers</div>
             <div>bonus share&download
             <a href="#" onclick="downloadCanvas(this)" download="">Download</a>
-
             </div>
-
         </section>
+    </main>
+
+    <main class="gallery">
+        <img class="gallery-item" src="img/5.jpg" onclick="onChooseImg(5)">
+        <img class="gallery-item" src="img/2.jpg" onclick="onChooseImg(2)">
     </main>
     <script src="js/memeService.js"></script>
     <script src="js/mainController.js"></script>

@@ -1,9 +1,9 @@
 'use strict';
 
 var gKeywords = { crazy: 2, angry: 1, funny: 5, cute: 2 };
-var gImgs = [{ id: 1, url: '../img/5.jpg' }];
+var gImgs = [];
 var gMeme = {
-    selectedImgId: 1,
+    selectedImgId: 5,
     selectedLineIdx: 0,
     lines: [
         {
@@ -14,6 +14,17 @@ var gMeme = {
         },
     ],
 };
+
+function createImageGallery(){
+    for(var i=1; i<=18; i++){
+        gImgs.push({id:i, url:`../img/${i}.jpg`})
+    }
+    return gImgs;
+}
+
+function updateMemeImage(id){
+    gMeme.selectedImgId = id;
+}
 
 function getImgSrc(){
     const idx = getImgIdxById();

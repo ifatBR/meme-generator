@@ -15,3 +15,6 @@ body{
     border: 1px solid black;
 }
 
+.gallery-item{
+    width: 30%;
+}
