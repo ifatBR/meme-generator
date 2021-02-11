@@ -171,7 +171,3 @@ function getClickedLine(clickedPos) {
     return idx;
 }
 
-//privat funcs\\
-function _logMeme() {
-    console.log('gMeme:', gMeme);
-}

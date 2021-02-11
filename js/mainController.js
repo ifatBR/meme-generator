@@ -6,6 +6,7 @@ var gElDownloadLink;
 const gTouchEvs = ['touchstart', 'touchmove', 'touchend'];
 var gFont = 'impact';
 var gCurrSearchWord;
+var gIsDownload = false;
 
 function init() {
     initKeyWords();
@@ -33,10 +34,23 @@ function onAddLine() {
 }
 
 function onDeleteLine() {
+    if(gCurrLnIdx===undefined) return;
     deleteLine(gCurrLnIdx);
     gCurrLnIdx = 0;
     emptyMemeTxtInput();
     if (getLinesCount() === 0) gCurrLnIdx = undefined;
+    renderCanvas();
+}
+
+function onMoveCurrLn(moveDiff) {
+    if(gCurrLnIdx===undefined) return;
+    moveLineY(gCurrLnIdx, moveDiff);
+    renderCanvas();
+}
+
+function updateCurrLine(lnIdx) {
+    if (lnIdx < 0) return;
+    gCurrLnIdx = lnIdx;
     renderCanvas();
 }
 
@@ -47,19 +61,52 @@ function onEditMemeText(elTextInput) {
     renderCanvas();
 }
 
+function addMemesText() {
+    const lnsObjs = getAllLines();
+    lnsObjs.forEach((lnObj, lnIdx) => {
+        const { txt, x, y } = lnObj;
+        if(lnObj.isStroke){
+            gCtx.strokeStyle = lnObj.color;
+            gCtx.fillStyle = 'white';
+        }
+        else{
+            gCtx.fillStyle = lnObj.color;
+            gCtx.strokeStyle = 'transparent';
+        }
+
+        gCtx.lineWidth = 1;
+        const fontSize = lnObj.size + 'px';
+        gCtx.font = fontSize + ' ' + gFont;
+        gCtx.textAlign = lnObj.align;
+        gCtx.fillText(txt, x, y);
+        gCtx.strokeText(txt, x, y);
+        updateTxtWidth(lnIdx, gCtx.measureText(txt).width);
+    });
+}
+
+function updateMemeTxtInput() {
+    document.querySelector('[name=meme-txt]').value = getLnObjectById(gCurrLnIdx).txt;
+}
+
+function emptyMemeTxtInput() {
+    document.querySelector('[name=meme-txt]').value = '';
+}
 
 function onChangeFontSize(sizeDiff) {
+    if(gCurrLnIdx===undefined) return;
     changeFontSize(gCurrLnIdx, sizeDiff);
     renderCanvas();
 }
 
 function onChangeAlign(align) {
+    if(gCurrLnIdx===undefined) return;
     changeAlign(gCurrLnIdx, align, gElCanvas.width);
     renderCanvas();
 }
 
 function onChangeFont(elSelectFont) {
     gFont = elSelectFont.value;
+    if(gCurrLnIdx===undefined) return;
     renderCanvas();
 }
 
@@ -80,60 +127,19 @@ function onSelectColor(elColorInput) {
 }
 
 
-function onDownloadImg(elLink) {
-    gCurrLnIdx = undefined;
-    renderCanvas(true);
-    var imgContent = gElCanvas.toDataURL('image/jpeg');
-    elLink.href = imgContent;
-}
-
-function renderCanvas(isDownload = false) {
+function renderCanvas() {
     const img = new Image();
     img.src = getImgSrc();
     img.onload = () => {
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
-        addMemesText();
-        if (!isDownload && gCurrLnIdx >= 0) showFocusBorder(gCurrLnIdx);
+        document.fonts.load('40px '+ gFont).then(addMemesText).then(showFocusBorder);
+        // if (!isDownload && gCurrLnIdx >= 0) showFocusBorder(gCurrLnIdx);
     };
 }
 
-function addMemesText() {
-    const lnsObjs = getAllLines();
-    lnsObjs.forEach((lnObj, lnIdx) => {
-        const { txt, x, y } = lnObj;
-        if(lnObj.isStroke){
-            gCtx.strokeStyle = lnObj.color;
-            gCtx.fillStyle = 'white';
-        }
-        else{
-            gCtx.fillStyle = lnObj.color;
-            gCtx.strokeStyle = 'transparent';
-
-        }
-        gCtx.lineWidth = 1;
-        const fontSize = lnObj.size + 'px';
-        gCtx.font = fontSize + ' ' + gFont;
-        gCtx.textAlign = lnObj.align;
-        gCtx.fillText(txt, x, y);
-        gCtx.strokeText(txt, x, y);
-        updateTxtWidth(lnIdx, gCtx.measureText(txt).width);
-    });
-}
-
-function onMoveCurrLn(moveDiff) {
-    moveLineY(gCurrLnIdx, moveDiff);
-    renderCanvas();
-}
-
-function updateCurrLine(lnIdx) {
-    if (lnIdx < 0) return;
-    // removeFocusBorder(gCurrLnIdx)
-    gCurrLnIdx = lnIdx;
-    renderCanvas();
-}
-
-function showFocusBorder(lnIdx) {
-    const lnObj = getLnObjectById(lnIdx);
+function showFocusBorder() {
+    if(gCurrLnIdx===undefined) return;
+    const lnObj = getLnObjectById(gCurrLnIdx);
     const { x, y, size, width } = lnObj;
     gCtx.lineWidth = 2;
     gCtx.beginPath();
@@ -153,13 +159,7 @@ function resizeCanvas() {
     gElCanvas.height = elContainer.offsetHeight;
 }
 
-function updateMemeTxtInput() {
-    document.querySelector('[name=meme-txt]').value = getLnObjectById(gCurrLnIdx).txt;
-}
 
-function emptyMemeTxtInput() {
-    document.querySelector('[name=meme-txt]').value = '';
-}
 //Gallery functions
 
 function onOpenGallery() {
@@ -233,12 +233,6 @@ function onToggleMenu() {
     document.body.classList.toggle('open-menu');
 }
 
-//For when I want to add download
-function downloadCanvas(elLink) {
-    const data = gElCanvas.toDataURL();
-    elLink.href = data;
-    elLink.download = 'my-img.jpg';
-}
 
 //LISTENERS
 function addListeners() {
@@ -310,4 +304,56 @@ function getEvPos(ev) {
         };
     }
     return pos;
+}
+
+//Download& share 
+
+// on submit call to this function
+function uploadImg(elForm, ev) {
+    ev.preventDefault();
+    document.getElementById('imgData').value = gElCanvas.toDataURL("image/jpeg");
+
+    // A function to be called if request succeeds
+    function onSuccess(uploadedImgUrl) {
+        uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
+        document.querySelector('.share-container').innerHTML = `
+        <a class="btn" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
+           Share   
+        </a>`
+    }
+
+    doUploadImg(elForm, onSuccess);
+}
+
+function doUploadImg(elForm, onSuccess) {
+    var formData = new FormData(elForm);
+    fetch('//ca-upload.com/here/upload.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(function (res) {
+        return res.text()
+    })
+    .then(onSuccess)
+    .catch(function (err) {
+        console.error(err)
+    })
+}
+
+function onDownloadImg() {
+    gCurrLnIdx = undefined;
+    renderCanvas();
+    document.querySelector('.download-share.modal').classList.remove('hide');
+    setTimeout(showDownloadShareModal,700);
+}
+
+function showDownloadShareModal(){
+    var imgContent = gElCanvas.toDataURL('image/jpeg');
+    const strHtml = `<a href="${imgContent}" class="start-action" download="Awesomeme" onClick="onCloseModal()">Click to download</a>`;
+    document.querySelector('.download-share.modal').innerHTML = strHtml;
+}
+
+function onCloseDownloadShareModal(){
+    document.querySelector('.download-share.modal').classList.add('hide');
+    gCurrLnIdx = (getLinesCount())? 0: undefined;
 }
