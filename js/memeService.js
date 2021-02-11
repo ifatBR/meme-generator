@@ -1,6 +1,21 @@
 'use strict';
 
-var gKeywords = [ {word:'All', rate: 20}, {word:'angry', rate: 1}, {word:'funny' , rate:32}, {word:'cute', rate:2}, {word:'politician', rate:7}];
+var gKeywords = {
+    all: 24,
+    angry: 1,
+    funny: 32,
+    cute: 2,
+    politician: 7,
+    man: 2,
+    baby: 10,
+};
+// var gKeywords = [
+//     { word: 'all', rate: 24 },
+//     { word: 'angry', rate: 1 },
+//     { word: 'funny', rate: 32 },
+//     { word: 'cute', rate: 2 },
+//     { word: 'politician', rate: 7 },
+// ];
 var gMeme = {
     selectedImgId: 5,
     selectedLineIdx: 0,
@@ -8,38 +23,53 @@ var gMeme = {
 };
 
 var gImgs = [
-    { id: 1, 
-        url: 'img/1.jpg', keywords:['politician', 'angry','man','crazy'] },
-    { id: 2, url: 'img/2.jpg', keywords:['animals','cute','dog'] },
-    { id: 3, url: 'img/3.jpg', keywords:['animals','baby','cute','sleep','dog'] },
-    { id: 4, url: 'img/4.jpg', keywords:['animals','cute','sleep','cat'] },
-    { id: 5, url: 'img/5.jpg', keywords:['baby','win','success'] },
-    { id: 6, url: 'img/6.jpg', keywords:['crazy','funny','man','smiling','explaining'] },
-    { id: 7, url: 'img/7.jpg', keywords:['baby','funny','cute','surprise'] },
-    { id: 8, url: 'img/8.jpg', keywords:['man','smiling','smug'] },
-    { id: 9, url: 'img/9.jpg', keywords:['baby','evil','laughing'] },
-    { id: 10, url: 'img/10.jpg', keywords:['politician', 'laughing','man'] },
-    { id: 11, url: 'img/11.jpg', keywords:['man','kissing','sports'] },
-    { id: 12, url: 'img/12.jpg', keywords:['man','explaining','pointing'] },
-    { id: 13, url: 'img/13.jpg', keywords:['man','cheers','smiling','movie'] },
-    { id: 14, url: 'img/14.jpg', keywords:['man','seriouse','sunglasses','movie'] },
-    { id: 15, url: 'img/15.jpg', keywords:['man','explaining','movie'] },
-    { id: 16, url: 'img/16.jpg', keywords:['man','laughing','surprised','movie'] },
-    { id: 17, url: 'img/17.jpg', keywords:['man','explaining','pointing','politician'] },
-    { id: 18, url: 'img/18.jpg', keywords:['pointing','movie','explaining','scared','sad'] },
+    { id: 1, url: 'img/1.jpg', keywords: ['politician', 'angry', 'man', 'crazy'] },
+    { id: 2, url: 'img/2.jpg', keywords: ['animals', 'cute', 'dog'] },
+    { id: 3, url: 'img/3.jpg', keywords: ['animals', 'baby', 'cute', 'sleep', 'dog'] },
+    { id: 4, url: 'img/4.jpg', keywords: ['animals', 'cute', 'sleep', 'cat'] },
+    { id: 5, url: 'img/5.jpg', keywords: ['baby', 'win', 'success'] },
+    { id: 6, url: 'img/6.jpg', keywords: ['crazy', 'funny', 'man', 'smiling', 'explaining'] },
+    { id: 7, url: 'img/7.jpg', keywords: ['baby', 'funny', 'cute', 'surprise'] },
+    { id: 8, url: 'img/8.jpg', keywords: ['man', 'smiling', 'smug'] },
+    { id: 9, url: 'img/9.jpg', keywords: ['baby', 'evil', 'laughing'] },
+    { id: 10, url: 'img/10.jpg', keywords: ['politician', 'laughing', 'man'] },
+    { id: 11, url: 'img/11.jpg', keywords: ['man', 'kissing', 'sports'] },
+    { id: 12, url: 'img/12.jpg', keywords: ['man', 'explaining', 'pointing'] },
+    { id: 13, url: 'img/13.jpg', keywords: ['man', 'cheers', 'smiling', 'movie'] },
+    { id: 14, url: 'img/14.jpg', keywords: ['man', 'seriouse', 'sunglasses', 'movie'] },
+    { id: 15, url: 'img/15.jpg', keywords: ['man', 'explaining', 'movie'] },
+    { id: 16, url: 'img/16.jpg', keywords: ['man', 'laughing', 'surprised', 'movie'] },
+    { id: 17, url: 'img/17.jpg', keywords: ['man', 'explaining', 'pointing', 'politician'] },
+    { id: 18, url: 'img/18.jpg', keywords: ['pointing', 'movie', 'explaining', 'scared', 'sad'] },
 ];
 
 function getImages() {
     return gImgs;
 }
 
-function getKeywords(){
+function updateKeywords() {
+    gImgs.forEach((img) => {
+        img.keywords.forEach((word)=> {
+            if(!gKeywords[word]){
+                 gKeywords[word] = 1;
+                 return
+                }
+            gKeywords[word]++;
+
+        })
+    });
+}
+
+function getKeywords() {
     return gKeywords;
 }
 
-function increaseWordRate(clickedWord){
-    gKeywords.find((word)=> word.word ===clickedWord).rate+=1;
+function increaseWordRate(clickedWord) {
+    gKeywords[clickedWord]++;
 }
+// function increaseWordRate(clickedWord) {
+//     gKeywords.find((word) => word.word === clickedWord).rate += 1;
+// }
 
 function changeMemeImage(id) {
     gMeme.selectedImgId = id;
@@ -88,6 +118,10 @@ function getLinesCount() {
     return gMeme.lines.length;
 }
 
+function resetLines(){
+    gMeme.lines=[];
+}
+
 function createNewLine(x) {
     const lnsCount = getLinesCount();
     if (gMeme.lines[lnsCount - 1]?.txt === '') return;
@@ -99,6 +133,7 @@ function createNewLine(x) {
         width: 0,
         size: 40,
         align: 'center',
+        isStroke: true,
         color: 'red',
         x: x,
         y: y,
@@ -120,20 +155,20 @@ function moveLineY(lnIdx, moveDiff) {
 
 function getClickedLine(clickedPos) {
     const idx = gMeme.lines.findIndex((ln) => {
+        let offset = 0;
+        if(ln.align === 'left') offset = ln.width / 2;
+        else if(ln.align === 'right') offset = -ln.width / 2;
+
         return (
-            ln.x - ln.width / 2 < clickedPos.x &&
-            ln.x + ln.width / 2 > clickedPos.x &&
+            ln.x - ln.width / 2 + offset < clickedPos.x &&
+            ln.x + ln.width / 2 + offset > clickedPos.x &&
             ln.y - ln.size - 5 < clickedPos.y &&
             ln.y + 10 > clickedPos.y
         );
     });
-    // console.log('idx',idx);
+
     if (idx < 0) return;
     return idx;
-    // return gMeme.lines[idx];
-    // const { pos } = gCircle
-    // const distance = Math.sqrt((pos.x - clickedPos.x) ** 2 + (pos.y - clickedPos.y) ** 2)
-    // return distance <= gCircle.size
 }
 
 //privat funcs\\

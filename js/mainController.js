@@ -8,11 +8,13 @@ var gFont = 'impact';
 var gCurrSearchWord;
 
 function init() {
+    initKeyWords();
     renderGallery();
 }
 
 
 function onChooseImg(id) {
+    resetLines();
     changeMemeImage(id);
     document.querySelector('.gallery-container').classList.add('hide');
     document.querySelector('.meme-editor').classList.remove('hide');
@@ -39,7 +41,7 @@ function onDeleteLine() {
 }
 
 function onEditMemeText(elTextInput) {
-    if (gCurrLnIdx === undefined) return;
+    if (gCurrLnIdx === undefined) onAddLine();
     const txt = elTextInput.value;
     updateMemeTxt(gCurrLnIdx, txt);
     renderCanvas();
@@ -61,10 +63,12 @@ function onChangeFont(elSelectFont) {
     renderCanvas();
 }
 
-function onAddUnderline() {
+function onToggleStroke(){
+    if(gCurrLnIdx === undefined) return;
     const lnObj = getLnObjectById(gCurrLnIdx);
-    const { x, y, width } = lnObj;
-    gCtx.beginPath();
+    lnObj.isStroke = !lnObj.isStroke;
+    console.log('lnObj:', lnObj)
+    renderCanvas();
 }
 
 function onSelectColor(elColorInput) {
@@ -97,12 +101,19 @@ function addMemesText() {
     const lnsObjs = getAllLines();
     lnsObjs.forEach((lnObj, lnIdx) => {
         const { txt, x, y } = lnObj;
+        if(lnObj.isStroke){
+            gCtx.strokeStyle = lnObj.color;
+            gCtx.fillStyle = 'white';
+        }
+        else{
+            gCtx.fillStyle = lnObj.color;
+            gCtx.strokeStyle = 'transparent';
+
+        }
         gCtx.lineWidth = 1;
         const fontSize = lnObj.size + 'px';
         gCtx.font = fontSize + ' ' + gFont;
         gCtx.textAlign = lnObj.align;
-        gCtx.strokeStyle = lnObj.color;
-        gCtx.fillStyle = 'white';
         gCtx.fillText(txt, x, y);
         gCtx.strokeText(txt, x, y);
         updateTxtWidth(lnIdx, gCtx.measureText(txt).width);
@@ -152,6 +163,8 @@ function emptyMemeTxtInput() {
 //Gallery functions
 
 function onOpenGallery() {
+    emptyMemeTxtInput();
+    gCurrLnIdx = undefined;
     document.querySelector('.gallery-container').classList.remove('hide');
     document.querySelector('.meme-editor').classList.add('hide');
     gCurrSearchWord = null;
@@ -160,21 +173,42 @@ function onOpenGallery() {
 
 function renderGallery(){
     let allImgs = getImages();
-    if(gCurrSearchWord) allImgs = getRelevantImgs(allImgs);
+    if(gCurrSearchWord && gCurrSearchWord !== 'all') allImgs = getRelevantImgs(allImgs);
     
     let strHtml = allImgs.map((img)=>`<img class="img-item" src="${img.url}" onclick="onChooseImg(${img.id})" />`).join('');
     document.querySelector('.img-container').innerHTML = strHtml; 
     renderKeyWords();
 }
 
+function initKeyWords(){
+    updateKeywords();
+    renderWordsList();
+}
+
+function renderWordsList(){
+    const allWords = getKeywords();
+    let strHtml = Object.keys(allWords).map((word)=> `<option value="${word}"></option>`).join('');
+    document.querySelector('#search-words').innerHTML = strHtml;
+}
+
 function renderKeyWords(){
     const screenWidth = window.innerWidth;
     const amount = (screenWidth > 1080)? 5:4;
-    const trandyKeywords = getKeywords().slice(0,amount);
-    let strHtml = trandyKeywords.map((word,idx)=>{
-        const fontSize = (word.rate > 24)? 24 : 12 + word.rate;
-        return `<li class="keyword word${idx}"><a href="#"  onclick="onClickSearchWord('${word.word}')" style="font-size:${fontSize}px">${word.word}</a></li>`
-    }).join('');
+    const trandyKeywordsArr = Object.entries(getKeywords()).slice(0,amount);
+    // console.log('trandyKeywordsArr:', trandyKeywordsArr)
+    const trandyKeywords = Object.fromEntries(trandyKeywordsArr);
+    let strHtml ='';
+    for(const word in trandyKeywords){
+        const fontSize = (trandyKeywords[word] >= 24)? 24 : 12 + trandyKeywords[word];
+        strHtml += `<li class="keyword"><a href="#"  onclick="onClickSearchWord('${word}')" 
+        style="font-size:${fontSize}px">${word}</a></li>`
+    }
+
+    // let strHtml = trandyKeywords.map((word,idx)=>{
+    //     const fontSize = (word.rate >= 24)? 24 : 12 + word.rate;
+    //     return `<li class="keyword word${idx}"><a href="#"  onclick="onClickSearchWord('${word.word}')" style="font-size:${fontSize}px">${word.word}</a></li>`
+    // }).join('');
+
     document.querySelector('.trandy-words').innerHTML = strHtml;
 }
 
@@ -188,12 +222,11 @@ function onClickSearchWord(word){
     renderGallery();
 }
 
-
-
 function onSearchImg(ev) {
     ev.preventDefault();
-    const searchWords = document.querySelector('.search').value;
-    console.log(searchWords);
+    gCurrSearchWord = document.querySelector('.search').value;
+    document.querySelector('.search').value = '';
+    renderGallery();
 }
 
 function onToggleMenu() {
