@@ -175,24 +175,12 @@ function renderGallery() {
     if (gCurrSearchWord && gCurrSearchWord !== 'all') allImgs = getRelevantImgs(allImgs);
 
     let strHtml = allImgs
-        .map((img) => {
-            const imgType = getImageType(img.url);
-            return `<img class="img-item ${imgType}" src="${img.url}" onclick="onChooseImg(${img.id})" />`;
-        })
-        .join('');
+        .map((img) => {return `<img class="img-item" src="${img.url}" onclick="onChooseImg(${img.id})" />`;}).join('');
 
     document.querySelector('.img-container').innerHTML = strHtml;
     renderKeyWords();
 }
 
-function getImageType(imgUrl) {
-    const currImg = new Image();
-    currImg.src = imgUrl;
-    const ratio = calculateImgRatio(currImg);
-    if(ratio > 1.2) return 'portrait';
-    else if(ratio < 0.8) return 'landscape';
-    return 'square';
-}
 
 function calculateImgRatio(img) {
     return img.height / img.width;
