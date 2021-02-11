@@ -9,6 +9,8 @@ var gCurrSearchWord;
 var gIsDownload = false;
 var gCurrColor = '#cc2e2e';
 var gCurrRatio = 1;
+var gIsDragging = false;
+var gStartPos ;
 function init() {
     initKeyWords();
     renderGallery();
@@ -196,15 +198,6 @@ function calculateImgRatio(img) {
     return img.height / img.width;
 }
 
-// function renderGallery() {
-//     let allImgs = getImages();
-//     if (gCurrSearchWord && gCurrSearchWord !== 'all') allImgs = getRelevantImgs(allImgs);
-
-//     let strHtml = allImgs.map((img) => `<img class="img-item" src="${img.url}" onclick="onChooseImg(${img.id})" />`).join('');
-//     document.querySelector('.img-container').innerHTML = strHtml;
-//     renderKeyWords();
-// }
-
 function initKeyWords() {
     updateKeywords();
     renderWordsList();
@@ -259,7 +252,6 @@ function onChooseImg(id) {
     gCtx = gElCanvas.getContext('2d');
     addListeners();
     renderCanvas();
-    resizeCanvas();
 }
 
 function onToggleMenu() {
@@ -298,29 +290,30 @@ function onDown(ev) {
     if (clickedLineIdx === undefined) return;
     updateCurrLine(clickedLineIdx);
     updateMemeTxtInput();
-    // if (!isCirlceClicked(pos)) return
-    // gCircle.isDragging = true
-    // gStartPos = pos
+    if(clickedLineIdx === undefined) return;
+    gIsDragging = true;
+    gStartPos = pos
     document.body.style.cursor = 'grabbing';
 }
 
 function onMove(ev) {
-    // if (gCircle.isDragging) {
-    //     const pos = getEvPos(ev)
-    //     const dx = pos.x - gStartPos.x
-    //     const dy = pos.y - gStartPos.y
-    //     gCircle.pos.x += dx
-    //     gCircle.pos.y += dy
-    //     gStartPos = pos
-    //     renderCanvas()
-    //     renderCircle()
-    // }
+    if(gIsDragging){
+        const lnObj = getLnObjectByIdx(gCurrLnIdx);
+        const pos = getEvPos(ev)
+        const dx = pos.x - gStartPos.x
+        const dy = pos.y - gStartPos.y
+        lnObj.x += dx
+        lnObj.y += dy
+        gStartPos = pos
+        renderCanvas()
+    }
 }
 
 function onUp() {
-    // gCircle.isDragging = false
+    gIsDragging = false;
     document.body.style.cursor = 'grab';
 }
+
 
 function getEvPos(ev) {
     var pos = {
@@ -352,7 +345,7 @@ function uploadImg(elForm, ev) {
         toggleModalScreen();
 
         document.querySelector('.download-share.modal').innerHTML = `
-        <a class="btn" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
+        <a class="btn start-action" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="onCloseDownloadShareModal();window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
         Click to share on facebook   
         </a>`;
     }
@@ -385,7 +378,7 @@ function onDownloadImg() {
 function showDownloadShareModal() {
     toggleModalScreen();
     var imgContent = gElCanvas.toDataURL('image/jpeg');
-    const strHtml = `<a href="${imgContent}" class="start-action" download="Awesomeme" onClick="onCloseDownloadShareModal()">Click to download</a>`;
+    const strHtml = `<a href="${imgContent}" class="btn start-action" download="Awesomeme" onClick="onCloseDownloadShareModal()">Click to download</a>`;
     document.querySelector('.download-share.modal').innerHTML = strHtml;
 }
 

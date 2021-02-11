@@ -461,16 +461,20 @@ body.open-modal .modal{
     visibility:visible;
 }
 
-.download-share{
-    display: block;
-    padding:50px;
-    font-size: 1.25em;
-    text-align: center;
-}
 
+
+.start-action{
+    display: block;
+    font-size: 1.25em;
+
+    padding:50px;
+    height: 100%;
+    width: 100%;
+}
 .hide {
     display: none;
 }
+
 /* list helpers */
 
 .clean-list {
