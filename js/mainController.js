@@ -107,7 +107,6 @@ function onToggleStroke() {
     if (gCurrLnIdx === undefined) return;
     const lnObj = getLnObjectByIdx(gCurrLnIdx);
     lnObj.isStroke = !lnObj.isStroke;
-    console.log('lnObj:', lnObj);
     renderCanvas();
 }
 
@@ -122,7 +121,7 @@ function onSelectColor(elColorInput) {
 function renderCanvas() {
     const img = new Image();
     img.src = getImgSrc();
-    gCurrRatio = calculateImgRation(img);
+    gCurrRatio = calculateImgRatio(img);
     resizeCanvas();
 
     img.onload = () => {
@@ -386,7 +385,7 @@ function onDownloadImg() {
 function showDownloadShareModal() {
     toggleModalScreen();
     var imgContent = gElCanvas.toDataURL('image/jpeg');
-    const strHtml = `<a href="${imgContent}" class="start-action" download="Awesomeme" onClick="onCloseModal()">Click to download</a>`;
+    const strHtml = `<a href="${imgContent}" class="start-action" download="Awesomeme" onClick="onCloseDownloadShareModal()">Click to download</a>`;
     document.querySelector('.download-share.modal').innerHTML = strHtml;
 }
 
