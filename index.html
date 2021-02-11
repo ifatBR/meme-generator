@@ -10,7 +10,7 @@
         <link href="fonts/impact/impact.ttf" rel="stylesheet" />
     </head>
     <body onload="init()">
-        <div class="main-screen" onclick="onToggleMenu()"></div>
+        <div class="main-screen screen" onclick="onToggleMenu()"></div>
         <header class="main-header gradient-background">
             <div class="main-container flex align-center space-between">
                 <!-- <h2 class="logo">LOGO</h2> -->
@@ -32,18 +32,15 @@
                     </div>
                 </div>
                 <section class="cntrls-container round-corners">
-                    <!-- <form class="controllers"> -->
                     <input type="text" class="meme-txt" name="meme-txt" oninput="onEditMemeText(this)" />
-                    <!-- <input type="text" class="meme-txt" name="meme-txt-1" oninput="onEditMemeText(this, 0)" />
-                    <input type="text" class="meme-txt" name="meme-txt-2" oninput="onEditMemeText(this, 1)" /> -->
                     <div class="ctrl-btns flex justify-center">
                         <button class="ctrl-btn three-d fa-btn up" onclick="onMoveCurrLn(-5)"></button>
                         <button class="ctrl-btn three-d fa-btn down" onclick="onMoveCurrLn(5)"></button>
-                        <!-- <button onclick="onSwitchLines()">switch lns</button> -->
                         <button class="ctrl-btn three-d fa-btn add-ln" onclick="onAddLine()"></button>
                         <button class="ctrl-btn three-d fa-btn delete" onclick="onDeleteLine()"></button>
                     </div>
-                    <!-- </form> -->
+
+
                     <div class="edit-font grid">
                         <button class="ctrl-btn bigger" onclick="onChangeFontSize(2)">A</button>
                         <button class="ctrl-btn smaller" onclick="onChangeFontSize(-2)">A</button>
@@ -69,7 +66,9 @@
                     
                     <div>bonus steackers</div>
                     <div>bonus share</div>
-                    <div class="download-share modal hide"></div>
+                    <div class="download-share modal"></div>
+                    <div class="modal-screen screen" onclick="onCloseDownloadShareModal()"></div>
+
                 </section>
             </section>
             <!-- </section> -->

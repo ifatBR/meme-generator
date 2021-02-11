@@ -13,7 +13,6 @@ function init() {
     renderGallery();
 }
 
-
 function onChooseImg(id) {
     resetLines();
     changeMemeImage(id);
@@ -34,7 +33,7 @@ function onAddLine() {
 }
 
 function onDeleteLine() {
-    if(gCurrLnIdx===undefined) return;
+    if (gCurrLnIdx === undefined) return;
     deleteLine(gCurrLnIdx);
     gCurrLnIdx = 0;
     emptyMemeTxtInput();
@@ -43,7 +42,7 @@ function onDeleteLine() {
 }
 
 function onMoveCurrLn(moveDiff) {
-    if(gCurrLnIdx===undefined) return;
+    if (gCurrLnIdx === undefined) return;
     moveLineY(gCurrLnIdx, moveDiff);
     renderCanvas();
 }
@@ -65,11 +64,10 @@ function addMemesText() {
     const lnsObjs = getAllLines();
     lnsObjs.forEach((lnObj, lnIdx) => {
         const { txt, x, y } = lnObj;
-        if(lnObj.isStroke){
+        if (lnObj.isStroke) {
             gCtx.strokeStyle = lnObj.color;
             gCtx.fillStyle = 'white';
-        }
-        else{
+        } else {
             gCtx.fillStyle = lnObj.color;
             gCtx.strokeStyle = 'transparent';
         }
@@ -93,28 +91,28 @@ function emptyMemeTxtInput() {
 }
 
 function onChangeFontSize(sizeDiff) {
-    if(gCurrLnIdx===undefined) return;
+    if (gCurrLnIdx === undefined) return;
     changeFontSize(gCurrLnIdx, sizeDiff);
     renderCanvas();
 }
 
 function onChangeAlign(align) {
-    if(gCurrLnIdx===undefined) return;
+    if (gCurrLnIdx === undefined) return;
     changeAlign(gCurrLnIdx, align, gElCanvas.width);
     renderCanvas();
 }
 
 function onChangeFont(elSelectFont) {
     gFont = elSelectFont.value;
-    if(gCurrLnIdx===undefined) return;
+    if (gCurrLnIdx === undefined) return;
     renderCanvas();
 }
 
-function onToggleStroke(){
-    if(gCurrLnIdx === undefined) return;
+function onToggleStroke() {
+    if (gCurrLnIdx === undefined) return;
     const lnObj = getLnObjectById(gCurrLnIdx);
     lnObj.isStroke = !lnObj.isStroke;
-    console.log('lnObj:', lnObj)
+    console.log('lnObj:', lnObj);
     renderCanvas();
 }
 
@@ -126,19 +124,21 @@ function onSelectColor(elColorInput) {
     renderCanvas();
 }
 
-
 function renderCanvas() {
     const img = new Image();
     img.src = getImgSrc();
     img.onload = () => {
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
-        document.fonts.load('40px '+ gFont).then(addMemesText).then(showFocusBorder);
+        document.fonts
+            .load('40px ' + gFont)
+            .then(addMemesText)
+            .then(showFocusBorder);
         // if (!isDownload && gCurrLnIdx >= 0) showFocusBorder(gCurrLnIdx);
     };
 }
 
 function showFocusBorder() {
-    if(gCurrLnIdx===undefined) return;
+    if (gCurrLnIdx === undefined) return;
     const lnObj = getLnObjectById(gCurrLnIdx);
     const { x, y, size, width } = lnObj;
     gCtx.lineWidth = 2;
@@ -159,7 +159,6 @@ function resizeCanvas() {
     gElCanvas.height = elContainer.offsetHeight;
 }
 
-
 //Gallery functions
 
 function onOpenGallery() {
@@ -171,37 +170,39 @@ function onOpenGallery() {
     if (document.body.classList.contains('open-menu')) onToggleMenu();
 }
 
-function renderGallery(){
+function renderGallery() {
     let allImgs = getImages();
-    if(gCurrSearchWord && gCurrSearchWord !== 'all') allImgs = getRelevantImgs(allImgs);
-    
-    let strHtml = allImgs.map((img)=>`<img class="img-item" src="${img.url}" onclick="onChooseImg(${img.id})" />`).join('');
-    document.querySelector('.img-container').innerHTML = strHtml; 
+    if (gCurrSearchWord && gCurrSearchWord !== 'all') allImgs = getRelevantImgs(allImgs);
+
+    let strHtml = allImgs.map((img) => `<img class="img-item" src="${img.url}" onclick="onChooseImg(${img.id})" />`).join('');
+    document.querySelector('.img-container').innerHTML = strHtml;
     renderKeyWords();
 }
 
-function initKeyWords(){
+function initKeyWords() {
     updateKeywords();
     renderWordsList();
 }
 
-function renderWordsList(){
+function renderWordsList() {
     const allWords = getKeywords();
-    let strHtml = Object.keys(allWords).map((word)=> `<option value="${word}"></option>`).join('');
+    let strHtml = Object.keys(allWords)
+        .map((word) => `<option value="${word}"></option>`)
+        .join('');
     document.querySelector('#search-words').innerHTML = strHtml;
 }
 
-function renderKeyWords(){
+function renderKeyWords() {
     const screenWidth = window.innerWidth;
-    const amount = (screenWidth > 1080)? 5:4;
-    const trandyKeywordsArr = Object.entries(getKeywords()).slice(0,amount);
+    const amount = screenWidth > 1080 ? 5 : 4;
+    const trandyKeywordsArr = Object.entries(getKeywords()).slice(0, amount);
     // console.log('trandyKeywordsArr:', trandyKeywordsArr)
     const trandyKeywords = Object.fromEntries(trandyKeywordsArr);
-    let strHtml ='';
-    for(const word in trandyKeywords){
-        const fontSize = (trandyKeywords[word] >= 24)? 24 : 12 + trandyKeywords[word];
+    let strHtml = '';
+    for (const word in trandyKeywords) {
+        const fontSize = trandyKeywords[word] >= 24 ? 24 : 12 + trandyKeywords[word];
         strHtml += `<li class="keyword"><a href="#"  onclick="onClickSearchWord('${word}')" 
-        style="font-size:${fontSize}px">${word}</a></li>`
+        style="font-size:${fontSize}px">${word}</a></li>`;
     }
 
     // let strHtml = trandyKeywords.map((word,idx)=>{
@@ -212,11 +213,11 @@ function renderKeyWords(){
     document.querySelector('.trandy-words').innerHTML = strHtml;
 }
 
-function getRelevantImgs(allImgs){
-    return allImgs.filter((img)=> img.keywords.includes(gCurrSearchWord))
+function getRelevantImgs(allImgs) {
+    return allImgs.filter((img) => img.keywords.includes(gCurrSearchWord));
 }
 
-function onClickSearchWord(word){
+function onClickSearchWord(word) {
     increaseWordRate(word);
     gCurrSearchWord = word;
     renderGallery();
@@ -232,7 +233,6 @@ function onSearchImg(ev) {
 function onToggleMenu() {
     document.body.classList.toggle('open-menu');
 }
-
 
 //LISTENERS
 function addListeners() {
@@ -306,20 +306,23 @@ function getEvPos(ev) {
     return pos;
 }
 
-//Download& share 
+//Download& share
 
 // on submit call to this function
 function uploadImg(elForm, ev) {
     ev.preventDefault();
-    document.getElementById('imgData').value = gElCanvas.toDataURL("image/jpeg");
+    document.getElementById('imgData').value = gElCanvas.toDataURL('image/jpeg');
 
     // A function to be called if request succeeds
     function onSuccess(uploadedImgUrl) {
-        uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
-        document.querySelector('.share-container').innerHTML = `
+        uploadedImgUrl = encodeURIComponent(uploadedImgUrl);
+        document.querySelector('.download-share.modal').classList.remove('hide');
+        toggleModalScreen();
+
+        document.querySelector('.download-share.modal').innerHTML = `
         <a class="btn" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
-           Share   
-        </a>`
+        Click to share on facebook   
+        </a>`;
     }
 
     doUploadImg(elForm, onSuccess);
@@ -329,31 +332,37 @@ function doUploadImg(elForm, onSuccess) {
     var formData = new FormData(elForm);
     fetch('//ca-upload.com/here/upload.php', {
         method: 'POST',
-        body: formData
+        body: formData,
     })
-    .then(function (res) {
-        return res.text()
-    })
-    .then(onSuccess)
-    .catch(function (err) {
-        console.error(err)
-    })
+        .then(function (res) {
+            return res.text();
+        })
+        .then(onSuccess)
+        .catch(function (err) {
+            console.error(err);
+        });
 }
 
 function onDownloadImg() {
     gCurrLnIdx = undefined;
     renderCanvas();
     document.querySelector('.download-share.modal').classList.remove('hide');
-    setTimeout(showDownloadShareModal,700);
+    setTimeout(showDownloadShareModal, 700);
 }
 
-function showDownloadShareModal(){
+function showDownloadShareModal() {
+    toggleModalScreen();
     var imgContent = gElCanvas.toDataURL('image/jpeg');
     const strHtml = `<a href="${imgContent}" class="start-action" download="Awesomeme" onClick="onCloseModal()">Click to download</a>`;
     document.querySelector('.download-share.modal').innerHTML = strHtml;
 }
 
-function onCloseDownloadShareModal(){
+function onCloseDownloadShareModal() {
+    toggleModalScreen();
     document.querySelector('.download-share.modal').classList.add('hide');
-    gCurrLnIdx = (getLinesCount())? 0: undefined;
+    gCurrLnIdx = getLinesCount() ? 0 : undefined;
+}
+
+function toggleModalScreen() {
+    document.body.classList.toggle('open-modal');
 }
