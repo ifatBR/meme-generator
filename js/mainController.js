@@ -8,12 +8,11 @@ var gCurrFont = 'impact';
 var gCurrSearchWord;
 var gIsDownload = false;
 var gCurrColor = '#cc2e2e';
-var gCurrRatio=1;
+var gCurrRatio = 1;
 function init() {
     initKeyWords();
     renderGallery();
 }
-
 
 function onAddLine() {
     createNewLine(gElCanvas.width / 2, gCurrColor);
@@ -54,10 +53,10 @@ function addMemesText() {
     const lnsObjs = getAllLines();
 
     lnsObjs.forEach((lnObj, lnIdx) => {
-            const { txt, x, y } = lnObj;
-            const fontFam = lnObj.font;
+        const { txt, x, y } = lnObj;
+        const fontFam = lnObj.font;
 
-            document.fonts.load('40px ' + fontFam).then(() => {
+        document.fonts.load('40px ' + fontFam).then(() => {
             if (lnObj.isStroke) {
                 gCtx.strokeStyle = lnObj.color;
                 gCtx.fillStyle = 'white';
@@ -65,16 +64,15 @@ function addMemesText() {
                 gCtx.fillStyle = lnObj.color;
                 gCtx.strokeStyle = 'transparent';
             }
-                gCtx.lineWidth = 1;
-                const fontSize = lnObj.size + 'px';
-                gCtx.font = fontSize + ' ' + fontFam;
-                gCtx.textAlign = lnObj.align;
-                gCtx.fillText(txt, x, y);
-                gCtx.strokeText(txt, x, y);
-                updateTxtWidth(lnIdx, gCtx.measureText(txt).width);
-            })
-        })
-        ;
+            gCtx.lineWidth = 1;
+            const fontSize = lnObj.size + 'px';
+            gCtx.font = fontSize + ' ' + fontFam;
+            gCtx.textAlign = lnObj.align;
+            gCtx.fillText(txt, x, y);
+            gCtx.strokeText(txt, x, y);
+            updateTxtWidth(lnIdx, gCtx.measureText(txt).width);
+        });
+    });
 }
 
 function updateMemeTxtInput() {
@@ -124,14 +122,13 @@ function onSelectColor(elColorInput) {
 function renderCanvas() {
     const img = new Image();
     img.src = getImgSrc();
-    gCurrRatio = img.height/ img.width;
+    gCurrRatio = calculateImgRation(img);
     resizeCanvas();
-    // console.log('img h:', img.height)
+
     img.onload = () => {
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
-        // gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
         addMemesText();
-        setTimeout(showFocusBorder,5)
+        setTimeout(showFocusBorder, 5);
     };
 }
 
@@ -154,9 +151,9 @@ function showFocusBorder() {
 function resizeCanvas() {
     const elContainerHeilo = document.querySelector('.canvas-container-heilo');
     const elContainer = elContainerHeilo.querySelector('.canvas-container');
-    const canvasContainerH = elContainer.offsetWidth * gCurrRatio
+    const canvasContainerH = elContainer.offsetWidth * gCurrRatio;
 
-    elContainerHeilo.style.height = canvasContainerH +'px';
+    elContainerHeilo.style.height = canvasContainerH + 'px';
     gElCanvas.width = elContainer.offsetWidth;
     gElCanvas.height = canvasContainerH;
 }
@@ -176,10 +173,38 @@ function renderGallery() {
     let allImgs = getImages();
     if (gCurrSearchWord && gCurrSearchWord !== 'all') allImgs = getRelevantImgs(allImgs);
 
-    let strHtml = allImgs.map((img) => `<img class="img-item" src="${img.url}" onclick="onChooseImg(${img.id})" />`).join('');
+    let strHtml = allImgs
+        .map((img) => {
+            const imgType = getImageType(img.url);
+            return `<img class="img-item ${imgType}" src="${img.url}" onclick="onChooseImg(${img.id})" />`;
+        })
+        .join('');
+
     document.querySelector('.img-container').innerHTML = strHtml;
     renderKeyWords();
 }
+
+function getImageType(imgUrl) {
+    const currImg = new Image();
+    currImg.src = imgUrl;
+    const ratio = calculateImgRatio(currImg);
+    if(ratio > 1.2) return 'portrait';
+    else if(ratio < 0.8) return 'landscape';
+    return 'square';
+}
+
+function calculateImgRatio(img) {
+    return img.height / img.width;
+}
+
+// function renderGallery() {
+//     let allImgs = getImages();
+//     if (gCurrSearchWord && gCurrSearchWord !== 'all') allImgs = getRelevantImgs(allImgs);
+
+//     let strHtml = allImgs.map((img) => `<img class="img-item" src="${img.url}" onclick="onChooseImg(${img.id})" />`).join('');
+//     document.querySelector('.img-container').innerHTML = strHtml;
+//     renderKeyWords();
+// }
 
 function initKeyWords() {
     updateKeywords();
