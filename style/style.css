@@ -7,10 +7,12 @@
     font-family: poppins;
     src: url(../fonts/poppins/Poppins-Medium.ttf);
 }
+
 @font-face {
     font-family: poppins-light;
     src: url(../fonts/poppins/Poppins-Light.ttf);
 }
+
 @font-face {
     font-family: poppins-bold;
     src: url(../fonts/poppins/Poppins-SemiBold.ttf);
@@ -24,6 +26,26 @@
 @font-face {
     font-family: fa-solid;
     src: url(../fonts/fa/fa-solid-900.ttf);
+}
+
+@font-face {
+    font-family: alfa-slab;
+    src: url(../fonts/Alfa_Slab_One/AlfaSlabOne-Regular.ttf);
+}
+
+@font-face {
+    font-family: permanent-marker;
+    src: url(../fonts/Permanent_Marker/PermanentMarker-Regular.ttf);
+}
+
+@font-face {
+    font-family: righteous;
+    src: url(../fonts/Righteous/Righteous-Regular.ttf);
+}
+
+@font-face {
+    font-family: pacifico;
+    src: url(../fonts/Pacifico/Pacifico-Regular.ttf);
 }
 
 * {
@@ -47,12 +69,12 @@ a {
     color: white;
 }
 
-button, input, select {
+button, input, select, form {
     border: none;
     outline: none;
 }
 
-button:focus, input:focus, select:focus{
+button:focus, input:focus, select:focus, form:focus{
     box-shadow: 0 0 3px 3px white;
 }
 /* Layout */
@@ -67,10 +89,16 @@ button:focus, input:focus, select:focus{
     margin: 15px 0 20px;
 }
 
-.logo {
+.logo{
     margin-left: 5px;
-    font-weight: 500;
-    font-size: 1.062em;
+    background-image: url("img/LOGO.png");
+    background-size:cover;
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+
+    /* font-weight: 500;
+    font-size: 1.062em; */
 }
 .menu-btn {
     display: none;
