@@ -90,12 +90,9 @@ button:focus, input:focus, select:focus, form:focus{
 }
 
 .logo{
-    margin-left: 5px;
-    background-image: url("img/LOGO.png");
-    background-size:cover;
-    width: 100px;
-    height: 100px;
-    background-repeat: no-repeat;
+    margin: 20px 5px;
+    height: 25px;
+    background-repeat: no-repeat; */
 
     /* font-weight: 500;
     font-size: 1.062em; */
@@ -106,6 +103,7 @@ button:focus, input:focus, select:focus, form:focus{
 
 .main-nav {
     width: 50%;
+    font-size:1.15em;
 }
 
 .main-nav > *:not(:last-child) {
@@ -321,6 +319,11 @@ button:focus, input:focus, select:focus, form:focus{
 }
 
 .gallery-container .trandy-words {
+    color:white;
+    padding:15px;
+}
+
+.gallery-container .trandy-words {
     background-color: #87898d;
 }
 
@@ -417,6 +420,7 @@ button:focus, input:focus, select:focus, form:focus{
         padding: 10px 0;
     }
 
+
     .ctrl-btn {
         height: 45px;
         width: 45px;
@@ -433,6 +437,7 @@ button:focus, input:focus, select:focus, form:focus{
         grid-column: span 3;
     } */
 }
+
 
 @media (max-width: 860px) {
     .main-container {
@@ -455,6 +460,10 @@ button:focus, input:focus, select:focus, form:focus{
         padding: 20px 20px;
     }
 
+    .ctrl-btns{
+        justify-content: space-around;
+    }
+
     .meme-txt {
         padding: 5px 0;
     }
@@ -466,6 +475,7 @@ button:focus, input:focus, select:focus, form:focus{
     }
 
     .gallery-header {
+        
         margin-bottom: 25px;
     }
     .gallery-container .search-form {
@@ -596,6 +606,15 @@ button:focus, input:focus, select:focus, form:focus{
 
     .gallery-container .trandy-words {
         width: unset;
+    }
+
+    .keyword a{
+        font-size:0.5em;
+    }
+
+    .word3
+    {
+        display:none;
     }
 
     .gallery-container .more {
