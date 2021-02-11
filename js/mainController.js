@@ -124,7 +124,6 @@ function renderCanvas() {
     const img = new Image();
     img.src = getImgSrc();
     gCurrRatio = calculateImgRatio(img);
-    // resizeCanvas();
 
     img.onload = () => {
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
@@ -152,15 +151,13 @@ function showFocusBorder() {
 function resizeCanvas() {
     const elContainerHeilo = document.querySelector('.canvas-container-heilo');
     const elContainer = elContainerHeilo.querySelector('.canvas-container');
-    const canvasContainerH = elContainer.offsetWidth * gCurrRatio;
-
+    const canvasContainerH = (elContainerHeilo.offsetWidth -14) * gCurrRatio;
     elContainerHeilo.style.height = canvasContainerH + 'px';
     gElCanvas.width = elContainer.offsetWidth;
     gElCanvas.height = canvasContainerH;
 }
 
 //Gallery functions
-
 function onOpenGallery() {
     emptyMemeTxtInput();
     gCurrLnIdx = undefined;
@@ -342,7 +339,9 @@ function uploadImg(elForm, ev) {
         toggleModalScreen();
 
         document.querySelector('.download-share.modal').innerHTML = `
-        <a class="btn start-action" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="onCloseDownloadShareModal();window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
+        <a class="btn start-action" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" 
+        title="Share on Facebook" target="_blank" onclick="onCloseDownloadShareModal();
+        window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
         Click to share on facebook   
         </a>`;
     }
@@ -375,7 +374,8 @@ function onDownloadImg() {
 function showDownloadShareModal() {
     toggleModalScreen();
     var imgContent = gElCanvas.toDataURL('image/jpeg');
-    const strHtml = `<a href="${imgContent}" class="btn start-action" download="Awesomeme" onClick="onCloseDownloadShareModal()">Click to download</a>`;
+    const strHtml = `<a href="${imgContent}" class="btn start-action" download="Awesomeme" 
+    onClick="onCloseDownloadShareModal()">Click to download</a>`;
     document.querySelector('.download-share.modal').innerHTML = strHtml;
 }
 
