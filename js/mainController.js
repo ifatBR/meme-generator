@@ -10,7 +10,7 @@ var gIsDownload = false;
 var gCurrColor = '#cc2e2e';
 var gCurrRatio = 1;
 var gIsDragging = false;
-var gStartPos ;
+var gStartPos;
 function init() {
     initKeyWords();
     renderGallery();
@@ -124,7 +124,7 @@ function renderCanvas() {
     const img = new Image();
     img.src = getImgSrc();
     gCurrRatio = calculateImgRatio(img);
-    resizeCanvas();
+    // resizeCanvas();
 
     img.onload = () => {
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
@@ -175,12 +175,14 @@ function renderGallery() {
     if (gCurrSearchWord && gCurrSearchWord !== 'all') allImgs = getRelevantImgs(allImgs);
 
     let strHtml = allImgs
-        .map((img) => {return `<img class="img-item" src="${img.url}" onclick="onChooseImg(${img.id})" />`;}).join('');
+        .map((img) => {
+            return `<img class="img-item" src="${img.url}" onclick="onChooseImg(${img.id})" />`;
+        })
+        .join('');
 
     document.querySelector('.img-container').innerHTML = strHtml;
     renderKeyWords();
 }
-
 
 function calculateImgRatio(img) {
     return img.height / img.width;
@@ -201,7 +203,10 @@ function renderWordsList() {
 
 function renderKeyWords() {
     const screenWidth = window.innerWidth;
-    const amount = screenWidth > 1080 ? 5 : 4;
+    let amount;
+    if (screenWidth > 1080) amount = 15;
+    else if (screenWidth > 630) amount = 12;
+    else amount = 9;
     const trandyKeywordsArr = Object.entries(getKeywords()).slice(0, amount);
     const trandyKeywords = Object.fromEntries(trandyKeywordsArr);
     let strHtml = '';
@@ -212,6 +217,10 @@ function renderKeyWords() {
     }
 
     document.querySelector('.trandy-words').innerHTML = strHtml;
+}
+
+function onToggleMoreWords() {
+    document.body.classList.toggle('more-menu');
 }
 
 function getRelevantImgs(allImgs) {
@@ -240,6 +249,7 @@ function onChooseImg(id) {
     gCtx = gElCanvas.getContext('2d');
     addListeners();
     renderCanvas();
+    resizeCanvas();
 }
 
 function onToggleMenu() {
@@ -278,22 +288,22 @@ function onDown(ev) {
     if (clickedLineIdx === undefined) return;
     updateCurrLine(clickedLineIdx);
     updateMemeTxtInput();
-    if(clickedLineIdx === undefined) return;
+    if (clickedLineIdx === undefined) return;
     gIsDragging = true;
-    gStartPos = pos
+    gStartPos = pos;
     document.body.style.cursor = 'grabbing';
 }
 
 function onMove(ev) {
-    if(gIsDragging){
+    if (gIsDragging) {
         const lnObj = getLnObjectByIdx(gCurrLnIdx);
-        const pos = getEvPos(ev)
-        const dx = pos.x - gStartPos.x
-        const dy = pos.y - gStartPos.y
-        lnObj.x += dx
-        lnObj.y += dy
-        gStartPos = pos
-        renderCanvas()
+        const pos = getEvPos(ev);
+        const dx = pos.x - gStartPos.x;
+        const dy = pos.y - gStartPos.y;
+        lnObj.x += dx;
+        lnObj.y += dy;
+        gStartPos = pos;
+        renderCanvas();
     }
 }
 
@@ -301,7 +311,6 @@ function onUp() {
     gIsDragging = false;
     document.body.style.cursor = 'grab';
 }
-
 
 function getEvPos(ev) {
     var pos = {

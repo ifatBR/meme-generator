@@ -5,9 +5,9 @@ var gKeywords = {
     angry: 1,
     funny: 32,
     cute: 2,
-    politician: 7,
     man: 2,
     baby: 10,
+    politics: 7,
 };
 
 var gMeme = {
@@ -17,7 +17,7 @@ var gMeme = {
 };
 
 var gImgs = [
-    { id: 1, url: 'img/1.jpg', keywords: ['politician', 'angry', 'man', 'crazy'] },
+    { id: 1, url: 'img/1.jpg', keywords: ['politics', 'angry', 'man', 'crazy'] },
     { id: 2, url: 'img/2.jpg', keywords: ['animals', 'cute', 'dog'] },
     { id: 3, url: 'img/3.jpg', keywords: ['animals', 'baby', 'cute', 'sleep', 'dog'] },
     { id: 4, url: 'img/4.jpg', keywords: ['animals', 'cute', 'sleep', 'cat'] },
@@ -26,14 +26,14 @@ var gImgs = [
     { id: 7, url: 'img/7.jpg', keywords: ['baby', 'funny', 'cute', 'surprise'] },
     { id: 8, url: 'img/8.jpg', keywords: ['man', 'smiling', 'smug'] },
     { id: 9, url: 'img/9.jpg', keywords: ['baby', 'evil', 'laughing'] },
-    { id: 10, url: 'img/10.jpg', keywords: ['politician', 'laughing', 'man'] },
+    { id: 10, url: 'img/10.jpg', keywords: ['politics', 'laughing', 'man'] },
     { id: 11, url: 'img/11.jpg', keywords: ['man', 'kissing', 'sports'] },
     { id: 12, url: 'img/12.jpg', keywords: ['man', 'explaining', 'pointing'] },
     { id: 13, url: 'img/13.jpg', keywords: ['man', 'cheers', 'smiling', 'movie','celebrity'] },
     { id: 14, url: 'img/14.jpg', keywords: ['man', 'seriouse', 'sunglasses', 'movie'] },
     { id: 15, url: 'img/15.jpg', keywords: ['man', 'explaining', 'movie'] },
     { id: 16, url: 'img/16.jpg', keywords: ['man', 'laughing', 'surprised', 'movie'] },
-    { id: 17, url: 'img/17.jpg', keywords: ['man', 'explaining', 'pointing', 'politician'] },
+    { id: 17, url: 'img/17.jpg', keywords: ['man', 'explaining', 'pointing', 'politics'] },
     { id: 18, url: 'img/18.jpg', keywords: ['pointing', 'movie', 'explaining', 'scared', 'sad'] },
     { id: 19, url: 'img/19.jpg', keywords: ['surprised', 'angry', 'shouting', 'man'] },
     { id: 20, url: 'img/20.jpg', keywords: ['happy', 'dancing','woman', 'movie'] },
