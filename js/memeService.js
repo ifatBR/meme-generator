@@ -9,13 +9,7 @@ var gKeywords = {
     man: 2,
     baby: 10,
 };
-// var gKeywords = [
-//     { word: 'all', rate: 24 },
-//     { word: 'angry', rate: 1 },
-//     { word: 'funny', rate: 32 },
-//     { word: 'cute', rate: 2 },
-//     { word: 'politician', rate: 7 },
-// ];
+
 var gMeme = {
     selectedImgId: 5,
     selectedLineIdx: 0,
@@ -42,6 +36,26 @@ var gImgs = [
     { id: 17, url: 'img/17.jpg', keywords: ['man', 'explaining', 'pointing', 'politician'] },
     { id: 18, url: 'img/18.jpg', keywords: ['pointing', 'movie', 'explaining', 'scared', 'sad'] },
 ];
+// var gImgs = [
+//     { id: 1, url: 'img/1.jpg', keywords: ['politician', 'angry', 'man', 'crazy'] },
+//     { id: 2, url: 'img/2.jpg', keywords: ['animals', 'cute', 'dog'] },
+//     { id: 3, url: 'img/3.jpg', keywords: ['animals', 'baby', 'cute', 'sleep', 'dog'] },
+//     { id: 4, url: 'img/4.jpg', keywords: ['animals', 'cute', 'sleep', 'cat'] },
+//     { id: 5, url: 'img/5.jpg', keywords: ['baby', 'win', 'success'] },
+//     { id: 6, url: 'img/6.jpg', keywords: ['crazy', 'funny', 'man', 'smiling', 'explaining'] },
+//     { id: 7, url: 'img/7.jpg', keywords: ['baby', 'funny', 'cute', 'surprise'] },
+//     { id: 8, url: 'img/8.jpg', keywords: ['man', 'smiling', 'smug'] },
+//     { id: 9, url: 'img/9.jpg', keywords: ['baby', 'evil', 'laughing'] },
+//     { id: 10, url: 'img/10.jpg', keywords: ['politician', 'laughing', 'man'] },
+//     { id: 11, url: 'img/11.jpg', keywords: ['man', 'kissing', 'sports'] },
+//     { id: 12, url: 'img/12.jpg', keywords: ['man', 'explaining', 'pointing'] },
+//     { id: 13, url: 'img/13.jpg', keywords: ['man', 'cheers', 'smiling', 'movie'] },
+//     { id: 14, url: 'img/14.jpg', keywords: ['man', 'seriouse', 'sunglasses', 'movie'] },
+//     { id: 15, url: 'img/15.jpg', keywords: ['man', 'explaining', 'movie'] },
+//     { id: 16, url: 'img/16.jpg', keywords: ['man', 'laughing', 'surprised', 'movie'] },
+//     { id: 17, url: 'img/17.jpg', keywords: ['man', 'explaining', 'pointing', 'politician'] },
+//     { id: 18, url: 'img/18.jpg', keywords: ['pointing', 'movie', 'explaining', 'scared', 'sad'] },
+// ];
 
 function getImages() {
     return gImgs;
@@ -67,11 +81,9 @@ function getKeywords() {
 function increaseWordRate(clickedWord) {
     gKeywords[clickedWord]++;
 }
-// function increaseWordRate(clickedWord) {
-//     gKeywords.find((word) => word.word === clickedWord).rate += 1;
-// }
 
-function changeMemeImage(id) {
+
+function setMemeImage(id) {
     gMeme.selectedImgId = id;
 }
 
@@ -80,18 +92,19 @@ function getImgSrc() {
     return gImgs[idx].url;
 }
 
-function getLnObjectById(lnIdx) {
+function getLnObjectByIdx(lnIdx) {
     const idx = getImgIdxById();
     return gMeme.lines[lnIdx];
 }
 
+
 function changeFontSize(lnIdx, sizeDiff) {
     if ((sizeDiff < 0 && gMeme.lines[lnIdx].size < 20) || (sizeDiff > 0 && gMeme.lines[lnIdx].size > 80)) return;
-    getLnObjectById(lnIdx).size += sizeDiff;
+    getLnObjectByIdx(lnIdx).size += sizeDiff;
 }
 
 function changeAlign(lnIdx, align, canvasWidth) {
-    const lnObj = getLnObjectById(lnIdx);
+    const lnObj = getLnObjectByIdx(lnIdx);
     lnObj.align = align;
     if (align === 'left') lnObj.x = 0 + 10;
     else if (align === 'right') lnObj.x = canvasWidth - 10;
@@ -99,15 +112,15 @@ function changeAlign(lnIdx, align, canvasWidth) {
 }
 
 function changeColor(lnIdx, color) {
-    getLnObjectById(lnIdx).color = color;
+    getLnObjectByIdx(lnIdx).color = color;
 }
 
 function updateMemeTxt(lnIdx, txt) {
-    getLnObjectById(lnIdx).txt = txt;
+    getLnObjectByIdx(lnIdx).txt = txt;
 }
 
 function updateTxtWidth(lnIdx, txtWidth) {
-    getLnObjectById(lnIdx).width = txtWidth;
+    getLnObjectByIdx(lnIdx).width = txtWidth;
 }
 
 function getImgIdxById() {
@@ -122,7 +135,7 @@ function resetLines(){
     gMeme.lines=[];
 }
 
-function createNewLine(x) {
+function createNewLine(x, currColor) {
     const lnsCount = getLinesCount();
     if (gMeme.lines[lnsCount - 1]?.txt === '') return;
     let y = 40;
@@ -134,7 +147,8 @@ function createNewLine(x) {
         size: 40,
         align: 'center',
         isStroke: true,
-        color: 'red',
+        color: currColor,
+        font:'impact',
         x: x,
         y: y,
     });
@@ -149,8 +163,7 @@ function getAllLines() {
 }
 
 function moveLineY(lnIdx, moveDiff) {
-    getLnObjectById(lnIdx).y += moveDiff;
-    // console.log('gMeme.lines[lnIdx]',gMeme.lines[lnIdx]);
+    getLnObjectByIdx(lnIdx).y += moveDiff;
 }
 
 function getClickedLine(clickedPos) {

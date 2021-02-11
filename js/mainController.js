@@ -4,29 +4,19 @@ var gCtx;
 var gCurrLnIdx;
 var gElDownloadLink;
 const gTouchEvs = ['touchstart', 'touchmove', 'touchend'];
-var gFont = 'impact';
+var gCurrFont = 'impact';
 var gCurrSearchWord;
 var gIsDownload = false;
-
+var gCurrColor = '#cc2e2e';
+var gCurrRatio=1;
 function init() {
     initKeyWords();
     renderGallery();
 }
 
-function onChooseImg(id) {
-    resetLines();
-    changeMemeImage(id);
-    document.querySelector('.gallery-container').classList.add('hide');
-    document.querySelector('.meme-editor').classList.remove('hide');
-    gElCanvas = document.getElementById('main-canvas');
-    gCtx = gElCanvas.getContext('2d');
-    addListeners();
-    renderCanvas();
-    resizeCanvas();
-}
 
 function onAddLine() {
-    createNewLine(gElCanvas.width / 2);
+    createNewLine(gElCanvas.width / 2, gCurrColor);
     gCurrLnIdx = getLinesCount() - 1;
     emptyMemeTxtInput();
     renderCanvas();
@@ -62,28 +52,33 @@ function onEditMemeText(elTextInput) {
 
 function addMemesText() {
     const lnsObjs = getAllLines();
-    lnsObjs.forEach((lnObj, lnIdx) => {
-        const { txt, x, y } = lnObj;
-        if (lnObj.isStroke) {
-            gCtx.strokeStyle = lnObj.color;
-            gCtx.fillStyle = 'white';
-        } else {
-            gCtx.fillStyle = lnObj.color;
-            gCtx.strokeStyle = 'transparent';
-        }
 
-        gCtx.lineWidth = 1;
-        const fontSize = lnObj.size + 'px';
-        gCtx.font = fontSize + ' ' + gFont;
-        gCtx.textAlign = lnObj.align;
-        gCtx.fillText(txt, x, y);
-        gCtx.strokeText(txt, x, y);
-        updateTxtWidth(lnIdx, gCtx.measureText(txt).width);
-    });
+    lnsObjs.forEach((lnObj, lnIdx) => {
+            const { txt, x, y } = lnObj;
+            const fontFam = lnObj.font;
+
+            document.fonts.load('40px ' + fontFam).then(() => {
+            if (lnObj.isStroke) {
+                gCtx.strokeStyle = lnObj.color;
+                gCtx.fillStyle = 'white';
+            } else {
+                gCtx.fillStyle = lnObj.color;
+                gCtx.strokeStyle = 'transparent';
+            }
+                gCtx.lineWidth = 1;
+                const fontSize = lnObj.size + 'px';
+                gCtx.font = fontSize + ' ' + fontFam;
+                gCtx.textAlign = lnObj.align;
+                gCtx.fillText(txt, x, y);
+                gCtx.strokeText(txt, x, y);
+                updateTxtWidth(lnIdx, gCtx.measureText(txt).width);
+            })
+        })
+        ;
 }
 
 function updateMemeTxtInput() {
-    document.querySelector('[name=meme-txt]').value = getLnObjectById(gCurrLnIdx).txt;
+    document.querySelector('[name=meme-txt]').value = getLnObjectByIdx(gCurrLnIdx).txt;
 }
 
 function emptyMemeTxtInput() {
@@ -103,14 +98,16 @@ function onChangeAlign(align) {
 }
 
 function onChangeFont(elSelectFont) {
-    gFont = elSelectFont.value;
+    gCurrFont = elSelectFont.value;
+    const lnObj = getLnObjectByIdx(gCurrLnIdx);
+    lnObj.font = gCurrFont;
     if (gCurrLnIdx === undefined) return;
     renderCanvas();
 }
 
 function onToggleStroke() {
     if (gCurrLnIdx === undefined) return;
-    const lnObj = getLnObjectById(gCurrLnIdx);
+    const lnObj = getLnObjectByIdx(gCurrLnIdx);
     lnObj.isStroke = !lnObj.isStroke;
     console.log('lnObj:', lnObj);
     renderCanvas();
@@ -118,7 +115,7 @@ function onToggleStroke() {
 
 function onSelectColor(elColorInput) {
     const color = elColorInput.value;
-    console.log(color);
+    gCurrColor = color;
     if (gCurrLnIdx === undefined) return;
     changeColor(gCurrLnIdx, color);
     renderCanvas();
@@ -127,19 +124,20 @@ function onSelectColor(elColorInput) {
 function renderCanvas() {
     const img = new Image();
     img.src = getImgSrc();
+    gCurrRatio = img.height/ img.width;
+    resizeCanvas();
+    // console.log('img h:', img.height)
     img.onload = () => {
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
-        document.fonts
-            .load('40px ' + gFont)
-            .then(addMemesText)
-            .then(showFocusBorder);
-        // if (!isDownload && gCurrLnIdx >= 0) showFocusBorder(gCurrLnIdx);
+        // gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
+        addMemesText();
+        setTimeout(showFocusBorder,5)
     };
 }
 
 function showFocusBorder() {
     if (gCurrLnIdx === undefined) return;
-    const lnObj = getLnObjectById(gCurrLnIdx);
+    const lnObj = getLnObjectByIdx(gCurrLnIdx);
     const { x, y, size, width } = lnObj;
     gCtx.lineWidth = 2;
     gCtx.beginPath();
@@ -154,9 +152,13 @@ function showFocusBorder() {
 }
 
 function resizeCanvas() {
-    const elContainer = document.querySelector('.canvas-container');
+    const elContainerHeilo = document.querySelector('.canvas-container-heilo');
+    const elContainer = elContainerHeilo.querySelector('.canvas-container');
+    const canvasContainerH = elContainer.offsetWidth * gCurrRatio
+
+    elContainerHeilo.style.height = canvasContainerH +'px';
     gElCanvas.width = elContainer.offsetWidth;
-    gElCanvas.height = elContainer.offsetHeight;
+    gElCanvas.height = canvasContainerH;
 }
 
 //Gallery functions
@@ -196,7 +198,6 @@ function renderKeyWords() {
     const screenWidth = window.innerWidth;
     const amount = screenWidth > 1080 ? 5 : 4;
     const trandyKeywordsArr = Object.entries(getKeywords()).slice(0, amount);
-    // console.log('trandyKeywordsArr:', trandyKeywordsArr)
     const trandyKeywords = Object.fromEntries(trandyKeywordsArr);
     let strHtml = '';
     for (const word in trandyKeywords) {
@@ -204,11 +205,6 @@ function renderKeyWords() {
         strHtml += `<li class="keyword"><a href="#"  onclick="onClickSearchWord('${word}')" 
         style="font-size:${fontSize}px">${word}</a></li>`;
     }
-
-    // let strHtml = trandyKeywords.map((word,idx)=>{
-    //     const fontSize = (word.rate >= 24)? 24 : 12 + word.rate;
-    //     return `<li class="keyword word${idx}"><a href="#"  onclick="onClickSearchWord('${word.word}')" style="font-size:${fontSize}px">${word.word}</a></li>`
-    // }).join('');
 
     document.querySelector('.trandy-words').innerHTML = strHtml;
 }
@@ -228,6 +224,18 @@ function onSearchImg(ev) {
     gCurrSearchWord = document.querySelector('.search').value;
     document.querySelector('.search').value = '';
     renderGallery();
+}
+
+function onChooseImg(id) {
+    resetLines();
+    setMemeImage(id);
+    document.querySelector('.gallery-container').classList.add('hide');
+    document.querySelector('.meme-editor').classList.remove('hide');
+    gElCanvas = document.getElementById('main-canvas');
+    gCtx = gElCanvas.getContext('2d');
+    addListeners();
+    renderCanvas();
+    resizeCanvas();
 }
 
 function onToggleMenu() {
