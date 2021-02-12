@@ -24,7 +24,7 @@
 
         <main class="main-container">
             
-            <section class="meme-editor main-container flex space-between wrap ">
+            <section class="meme-editor main-container flex space-between wrap hide">
                 <div class="canvas-container-heilo round-corners">
                     <div class="canvas-container round-corners">
                         <canvas id="main-canvas" width="400" height="400"></canvas>
@@ -34,15 +34,15 @@
                     <input type="text" class="meme-txt" name="meme-txt" oninput="onEditMemeText(this)" />
                     <div class="ctrl-btns flex justify-center">
                         <button class="ctrl-btn three-d fa-btn switch" onclick="onSwitchLines()"></button>
-                        <button class="ctrl-btn three-d fa-btn up" onclick="onMoveCurrLn(-5)"></button>
-                        <button class="ctrl-btn three-d fa-btn down" onclick="onMoveCurrLn(5)"></button>
+                        <button class="ctrl-btn three-d fa-btn up" onclick="onMoveCurrElm(-5)"></button>
+                        <button class="ctrl-btn three-d fa-btn down" onclick="onMoveCurrElm(5)"></button>
                         <button class="ctrl-btn three-d fa-btn add-ln" onclick="onAddLine()"></button>
                         <button class="ctrl-btn three-d fa-btn delete" onclick="onDeleteLine()"></button>
                     </div>
 
                     <div class="edit-font grid">
-                        <button class="ctrl-btn bigger" onclick="onChangeFontSize(2)">A</button>
-                        <button class="ctrl-btn smaller" onclick="onChangeFontSize(-2)">A</button>
+                        <button class="ctrl-btn bigger" onclick="onChangeSize(2)">A</button>
+                        <button class="ctrl-btn smaller" onclick="onChangeSize(-2)">A</button>
                         <button class="ctrl-btn fa-btn left" onclick="onChangeAlign('left')"></button>
                         <button class="ctrl-btn fa-btn center" onclick="onChangeAlign('center')"></button>
                         <button class="ctrl-btn fa-btn right" onclick="onChangeAlign('right')"></button>

@@ -20,11 +20,10 @@ function init() {
     renderStickers();
 }
 
-function initTxtCtrls(){
+function initTxtCtrls() {
     document.querySelector('.color input').value = '#cc2e2e';
-    gCurrFont= 'impact';
+    gCurrFont = 'impact';
     document.querySelector('.select-font').value = gCurrFont;
-    gStickerBrowseIdx = 1;
     resetLines();
 }
 
@@ -35,31 +34,56 @@ function onSwitchLines() {
     renderCanvas();
 }
 
-function onMoveCurrLn(moveDiff) {
-    if (gCurrLnIdx === undefined) return;
-    moveLineY(gCurrLnIdx, moveDiff);
+function onMoveCurrElm(moveDiff) {
+    if (isNoneSelected()) return;
+    if (gCurrStickerIdx === undefined) moveElmY(gCurrLnIdx, moveDiff, true);
+    else moveElmY(gCurrStickerIdx, moveDiff, false);
     renderCanvas();
 }
 
 function onAddLine() {
-    createNewLine(gElCanvas.width / 2, gCurrColor, gCurrFont);
+    gCurrStickerIdx = undefined;
+    createNewLine(gElCanvas.width, gElCanvas.height, gCurrColor, gCurrFont);
     gCurrLnIdx = getLinesCount() - 1;
     emptyMemeTxtInput();
     renderCanvas();
 }
 
 function onDeleteLine() {
-    if (gCurrLnIdx === undefined) return;
-    deleteLine(gCurrLnIdx);
-    gCurrLnIdx = 0;
-    emptyMemeTxtInput();
-    if (getLinesCount() === 0) gCurrLnIdx = undefined;
+    if (isNoneSelected()) return;
+    if (gCurrStickerIdx === undefined) {
+        deleteElm(gCurrLnIdx, true);
+        gCurrLnIdx = 0;
+        emptyMemeTxtInput();
+        if (getLinesCount() === 0) {
+            gCurrLnIdx = undefined;
+            updateCurrElement(getStickersCount() - 1, false);
+        }
+    } else {
+        deleteElm(gCurrStickerIdx, false);
+        gCurrStickerIdx = 0;
+        if (getStickersCount() === 0) {
+            gCurrStickerIdx = undefined;
+            updateCurrElement(getLinesCount() - 1, true);
+        }
+    }
     renderCanvas();
 }
 
-function updateCurrLine(lnIdx) {
-    if (lnIdx < 0) return;
-    gCurrLnIdx = lnIdx;
+function updateCurrElement(idx, isLine) {
+    if (idx < 0) {
+        gCurrStickerIdx = undefined;
+        gCurrLnIdx = undefined;
+        return;
+    }
+    if (isLine) {
+        gCurrLnIdx = idx;
+        gCurrStickerIdx = undefined;
+        renderCanvas();
+        return;
+    }
+    gCurrLnIdx = undefined;
+    gCurrStickerIdx = idx;
     renderCanvas();
 }
 
@@ -70,31 +94,6 @@ function onEditMemeText(elTextInput) {
     renderCanvas();
 }
 
-function addMemesText() {
-    const lnsObjs = getAllLines();
-
-    lnsObjs.forEach((lnObj, lnIdx) => {
-        const { txt, x, y } = lnObj;
-        const fontFam = lnObj.font;
-        document.fonts.load('40px ' + fontFam).then(() => {
-            if (lnObj.isStroke) {
-                gCtx.strokeStyle = lnObj.color;
-                gCtx.fillStyle = 'white';
-            } else {
-                gCtx.fillStyle = lnObj.color;
-                gCtx.strokeStyle = 'transparent';
-            }
-            gCtx.lineWidth = 1;
-            const fontSize = lnObj.size + 'px';
-            gCtx.font = fontSize + ' ' + fontFam;
-            gCtx.textAlign = lnObj.align;
-            gCtx.fillText(txt, x, y);
-            gCtx.strokeText(txt, x, y);
-            updateTxtWidth(lnIdx, gCtx.measureText(txt).width);
-        });
-    });
-}
-
 function updateMemeTxtInput() {
     document.querySelector('[name=meme-txt]').value = getLnObjectByIdx(gCurrLnIdx).txt;
 }
@@ -103,10 +102,16 @@ function emptyMemeTxtInput() {
     document.querySelector('[name=meme-txt]').value = '';
 }
 
-function onChangeFontSize(sizeDiff) {
-    if (gCurrLnIdx === undefined) return;
-    changeFontSize(gCurrLnIdx, sizeDiff);
+function onChangeSize(sizeDiff) {
+    if (isNoneSelected()) return;
+    if(gCurrStickerIdx === undefined){
+         changeElmSize(gCurrLnIdx, sizeDiff, true);
+        renderCanvas();
+        return;}
+    changeElmSize(gCurrStickerIdx, sizeDiff, false);
     renderCanvas();
+    
+
 }
 
 function onChangeAlign(align) {
@@ -139,17 +144,24 @@ function onSelectColor(elColorInput) {
     renderCanvas();
 }
 
-function renderStickers(){
+function renderStickers() {
     let stickers = getStickers();
-    const strHtml = stickers.map((sticker) => `<img src="img/stickers/${sticker.url}">`).join('');
+    const strHtml = stickers.map((sticker) => `<img src="${sticker.url}" onclick="onAddSticker('${sticker.id}')">`).join('');
     document.querySelector('.stickers').innerHTML = strHtml;
 }
 
-function onChanePage(pageDiff){
-    changePage(pageDiff);
-    renderStickers()
+function onAddSticker(stickerId) {
+    createNewSticker(stickerId, gElCanvas.width, gElCanvas.height);
+    gCurrStickerIdx = getStickersCount() - 1;
+    gCurrLnIdx = undefined;
+    emptyMemeTxtInput();
+    renderCanvas();
 }
 
+function onChanePage(pageDiff) {
+    changeStickersPage(pageDiff);
+    renderStickers();
+}
 
 function renderCanvas() {
     const img = new Image();
@@ -159,23 +171,77 @@ function renderCanvas() {
         resizeCanvas();
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
         addMemesText();
-        setTimeout(showFocusBorder, 20);
+        addMemesStickers();
+        setTimeout(showFocusBorder, 10);
     };
 }
 
+function addMemesText() {
+    const lnsObjs = getAllLines();
+
+    lnsObjs.forEach((lnObj, lnIdx) => {
+        const { txt, pos } = lnObj;
+        const fontFam = lnObj.font;
+        document.fonts.load('40px ' + fontFam).then(() => {
+            if (lnObj.isStroke) {
+                gCtx.strokeStyle = lnObj.color;
+                gCtx.fillStyle = 'white';
+            } else {
+                gCtx.fillStyle = lnObj.color;
+                gCtx.strokeStyle = 'transparent';
+            }
+            gCtx.lineWidth = 1;
+            const fontSize = lnObj.size + 'px';
+            gCtx.font = fontSize + ' ' + fontFam;
+            gCtx.textAlign = lnObj.align;
+            gCtx.fillText(txt, pos.x, pos.y);
+            gCtx.strokeText(txt, pos.x, pos.y);
+            updateTxtWidth(lnIdx, gCtx.measureText(txt).width);
+        });
+    });
+}
+
+function addMemesStickers() {
+    const currStickers = getMemeStickers();
+    currStickers.forEach((sticker, idx) => {
+        const{src,width,height,pos} = sticker;
+        const img = new Image();
+        img.src = src;
+        const stickerH = (img.height/img.width ) * width;
+        setStickerH(idx, stickerH);
+        gCtx.drawImage(img, pos.x, pos.y, width, stickerH);
+    });
+}
+
 function showFocusBorder() {
-    if (gCurrLnIdx === undefined) return;
-    const lnObj = getLnObjectByIdx(gCurrLnIdx);
-    const { x, y, size, width } = lnObj;
+    if (isNoneSelected()) return;
     gCtx.lineWidth = 2;
+    gCtx.strokeStyle = 'white';
+    if (gCurrStickerIdx === undefined) {
+        showLineFocusBorder();
+        return;
+    }
+    showStickerFocusBorder();
+}
+
+function showLineFocusBorder() {
+    const lnObj = getLnObjectByIdx(gCurrLnIdx);
+    const { pos, size, width } = lnObj;
     gCtx.beginPath();
 
     let widthOffst = -width;
     if (lnObj.align === 'left') widthOffst = 0;
     else if (lnObj.align === 'center') widthOffst = -width / 2;
 
-    gCtx.rect(x + widthOffst - 5, y - size * 1.25, width + 10, size * 1.75);
-    gCtx.strokeStyle = 'white';
+    gCtx.rect(pos.x + widthOffst - 5, pos.y - size * 1.25, width + 10, size * 1.75);
+    gCtx.stroke();
+}
+
+function showStickerFocusBorder() {
+    const stickerObj = getCurrStickerObjByIdx(gCurrStickerIdx);
+    const { pos, width, height } = stickerObj;
+    gCtx.beginPath();
+    gCtx.rect(pos.x, pos.y, width, height);
     gCtx.stroke();
 }
 
@@ -188,29 +254,34 @@ function resizeCanvas() {
     gElCanvas.height = canvasContainerH;
 }
 
+function isNoneSelected() {
+    return gCurrLnIdx === undefined && gCurrStickerIdx === undefined;
+}
 //Gallery functions
 
-function onToggleMemesMenu(){
+function onToggleMemesMenu() {
     if (document.body.classList.contains('open-menu')) onToggleMenu();
     document.body.classList.toggle('open-memes');
     // document.querySelector('.memes-container').classList.toggle('open-memes');
-    renderSavedMemes()
+    renderSavedMemes();
 }
 
-function renderSavedMemes(){
+function renderSavedMemes() {
     const savedMemes = getSavedMemes();
-    let strHtml = '<h2>My saved memes</h2>'
-    strHtml += savedMemes.map((meme)=>{
-        return `<img src="${meme.imgContent}" onclick="onDownloadSavedMeme(event,this)">`}).join('');
+    let strHtml = '<h2>My saved memes</h2>';
+    strHtml += savedMemes
+        .map((meme) => {
+            return `<img src="${meme.imgContent}" onclick="onDownloadSavedMeme(event,this)">`;
+        })
+        .join('');
     document.querySelector('.memes').innerHTML = strHtml;
 }
-
 
 function onOpenGallery() {
     if (document.body.classList.contains('open-menu')) onToggleMenu();
     else if (document.body.classList.contains('open-memes')) onToggleMemesMenu();
     let elGallery = document.querySelector('.gallery-container');
-    if(!elGallery.classList.contains('hide')) return;
+    if (!elGallery.classList.contains('hide')) return;
 
     emptyMemeTxtInput();
     gCurrLnIdx = undefined;
@@ -336,11 +407,14 @@ function addTouchListeners() {
 
 function onDown(ev) {
     const pos = getEvPos(ev);
-    const clickedLineIdx = getClickedLine(pos);
-    if (clickedLineIdx === undefined) return;
-    updateCurrLine(clickedLineIdx);
-    updateMemeTxtInput();
-    if (clickedLineIdx === undefined) return;
+    const clickedLineIdx = getClickedLineIdx(pos);
+    const clickedStickerIdx = geClickedStickerIdx(pos);
+    if (clickedLineIdx < 0 && clickedStickerIdx < 0) return;
+    if (clickedStickerIdx < 0) {
+        updateCurrElement(clickedLineIdx, true);
+        updateMemeTxtInput();
+    } else updateCurrElement(clickedStickerIdx, false);
+
     gIsDragging = true;
     gStartPos = pos;
     document.body.style.cursor = 'grabbing';
@@ -348,13 +422,32 @@ function onDown(ev) {
 
 function onMove(ev) {
     if (gIsDragging) {
-        const lnObj = getLnObjectByIdx(gCurrLnIdx);
+        let currObj;
         const pos = getEvPos(ev);
-        const dy = pos.y - gStartPos.y;
-        lnObj.y += dy;
-        gStartPos = pos;
-        renderCanvas();
+        if (gCurrStickerIdx === undefined) {
+            moveLine(pos);
+            return;
+        }
+        moveSticker(pos);
     }
+}
+
+function moveSticker(pos) {
+    const currSticker = getCurrStickerObjByIdx(gCurrStickerIdx);
+    const dx = pos.x - gStartPos.x;
+    const dy = pos.y - gStartPos.y;
+    currSticker.pos.x += dx;
+    currSticker.pos.y += dy;
+    gStartPos = pos;
+    renderCanvas();
+}
+
+function moveLine(pos) {
+    const currLn = getLnObjectByIdx(gCurrLnIdx);
+    const dy = pos.y - gStartPos.y;
+    currLn.pos.y += dy;
+    gStartPos = pos;
+    renderCanvas();
 }
 
 function onUp() {
@@ -383,7 +476,7 @@ function getEvPos(ev) {
 // on submit call to this function
 
 function onDownloadImg() {
-    gCurrLnIdx = undefined;
+    resetIdxs()
     renderCanvas();
     setTimeout(setDownloadLink, 700);
 }
@@ -397,7 +490,7 @@ function setDownloadLink() {
 
 function uploadImg(elForm, ev) {
     ev.preventDefault();
-    gCurrLnIdx = undefined;
+    resetIdxs()
     renderCanvas();
     document.getElementById('imgData').value = gElCanvas.toDataURL('image/jpeg');
 
@@ -432,19 +525,19 @@ function doUploadImg(elForm, onSuccess) {
 }
 
 function onSaveImg() {
-    gCurrLnIdx = undefined;
+    resetIdxs()
     renderCanvas();
-    setTimeout(setSaveLink,700);
+    setTimeout(setSaveLink, 700);
 }
 
 function setSaveLink() {
     const imgContent = gElCanvas.toDataURL('image/jpeg');
     addToSavedMemes(imgContent);
-    const strHtml = `<a class="btn start-action" onClick="onCloseDownloadShareModal()">Meme has been saved!</a>`;
+    const strHtml = `<a class="btn start-action" onClick="onCloseDownloadShareModal()">Click to save</a>`;
     toggleModalScreen(strHtml);
 }
 
-function onDownloadSavedMeme(ev, elImg){
+function onDownloadSavedMeme(ev, elImg) {
     ev.stopPropagation();
     const strHtml = `<a href="${elImg.src}" class="btn start-action" download="Awesomeme" 
     onClick="onCloseDownloadShareModal()">Click to download</a>`;
@@ -457,6 +550,11 @@ function onCloseDownloadShareModal() {
 }
 
 function toggleModalScreen(strHtml) {
-    document.querySelector('.download-share.modal').innerHTML = strHtml;
+    if(strHtml) document.querySelector('.download-share.modal').innerHTML = strHtml;
     document.body.classList.toggle('open-modal');
+}
+
+function resetIdxs(){
+    gCurrLnIdx = undefined;
+    gCurrStickerIdx = undefined;
 }
