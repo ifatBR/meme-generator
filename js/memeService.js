@@ -44,11 +44,13 @@ var gImgs = [
     { id: 25, url: 'img/25.jpg', keywords: ['happy', 'woman', 'shouting', 'celebrity'] },
 ];
 
-var gSavedMemes = [];
+var gSavedMemes;
 const SAVED_MEMES_KEY = 'mySavedMemes';
 
 function getSavedMemes() {
-    return loadFromStorage(SAVED_MEMES_KEY);
+    gSavedMemes = loadFromStorage(SAVED_MEMES_KEY);
+    if(!gSavedMemes) gSavedMemes = [];
+    return gSavedMemes;
 }
 
 function addToSavedMemes(imgContent) {

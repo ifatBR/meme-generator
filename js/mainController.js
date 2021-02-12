@@ -167,16 +167,33 @@ function resizeCanvas() {
 //Gallery functions
 
 function onToggleMemesMenu(){
+    if (document.body.classList.contains('open-menu')) onToggleMenu();
     document.body.classList.toggle('open-memes');
+    // document.querySelector('.memes-container').classList.toggle('open-memes');
+    renderSavedMemes()
 }
 
+function renderSavedMemes(){
+    const savedMemes = getSavedMemes();
+    let strHtml = '<h2>My saved memes</h2>'
+    strHtml += savedMemes.map((meme)=>{
+        return `<img src="${meme.imgContent}" onclick="onDownloadSavedMeme(event,this)">`}).join('');
+    document.querySelector('.memes').innerHTML = strHtml;
+}
+
+
 function onOpenGallery() {
+    if (document.body.classList.contains('open-menu')) onToggleMenu();
+    else if (document.body.classList.contains('open-memes')) onToggleMemesMenu();
+    let elGallery = document.querySelector('.gallery-container');
+    if(!elGallery.classList.contains('hide')) return;
+
     emptyMemeTxtInput();
     gCurrLnIdx = undefined;
-    document.querySelector('.gallery-container').classList.remove('hide');
+    document.body.classList.add('show-gallery');
+    elGallery.classList.remove('hide');
     document.querySelector('.meme-editor').classList.add('hide');
     gCurrSearchWord = null;
-    if (document.body.classList.contains('open-menu')) onToggleMenu();
 }
 
 function renderGallery() {
@@ -254,6 +271,7 @@ function onSearchImg(ev) {
 function onChooseImg(id) {
     resetLines();
     setMemeImage(id);
+    document.body.classList.remove('show-gallery');
     document.querySelector('.gallery-container').classList.add('hide');
     document.querySelector('.meme-editor').classList.remove('hide');
     gElCanvas = document.getElementById('main-canvas');
@@ -390,9 +408,23 @@ function doUploadImg(elForm, onSuccess) {
 }
 
 function onSaveImg() {
+    gCurrLnIdx = undefined;
+    renderCanvas();
+    setTimeout(setSaveLink,700);
+}
+
+function setSaveLink() {
     const imgContent = gElCanvas.toDataURL('image/jpeg');
-    console.log('saving');
     addToSavedMemes(imgContent);
+    const strHtml = `<a class="btn start-action" onClick="onCloseDownloadShareModal()">Meme has been saved!</a>`;
+    toggleModalScreen(strHtml);
+}
+
+function onDownloadSavedMeme(ev, elImg){
+    ev.stopPropagation();
+    const strHtml = `<a href="${elImg.src}" class="btn start-action" download="Awesomeme" 
+    onClick="onCloseDownloadShareModal()">Click to download</a>`;
+    toggleModalScreen(strHtml);
 }
 
 function onCloseDownloadShareModal() {
