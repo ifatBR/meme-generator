@@ -139,9 +139,14 @@ function changeStickersPage(pageDiff) {
     else if (gStickersPageIdx < 0) gStickersPageIdx = Math.ceil(gStickers.length / STICKERS_PAGE_SIZE) - 1;
 }
 
-function setMemeImage(id) {
+function setMemeImage(id, imgSrc) {
+    if (id < 0){
+        id = makeId();
+        gImgs.push({id, url:imgSrc, keywords:['personal']})
+    }
     gMeme.selectedImgId = id;
 }
+
 
 function getImgSrc() {
     const idx = getImgIdxById();
@@ -155,15 +160,14 @@ function getLnObjectByIdx(lnIdx) {
 
 function changeElmSize(idx, sizeDiff, isLine) {
     if (isLine) {
-        const lnObj = getLnObjectByIdx(idx)
+        const lnObj = getLnObjectByIdx(idx);
         if ((sizeDiff < 0 && lnObj.size < 20) || (sizeDiff > 0 && lnObj.size > 80)) return;
         lnObj.size += sizeDiff;
         return;
-    };
+    }
     const stickerObj = getCurrStickerObjByIdx(idx);
     if ((sizeDiff < 0 && stickerObj.width < 30) || (sizeDiff > 0 && stickerObj.width > 150)) return;
-    stickerObj.width+=sizeDiff;
-
+    stickerObj.width += sizeDiff;
 }
 
 function changeAlign(lnIdx, align, canvasWidth) {
@@ -260,10 +264,7 @@ function getClickedLineIdx(clickedPos) {
 function geClickedStickerIdx(clickedPos) {
     const idx = gMeme.stickers.findIndex((sticker) => {
         const { pos, width, height } = sticker;
-        return pos.x < clickedPos.x && 
-        pos.x + width > clickedPos.x && 
-        pos.y < clickedPos.y && 
-        pos.y + height > clickedPos.y;
+        return pos.x < clickedPos.x && pos.x + width > clickedPos.x && pos.y < clickedPos.y && pos.y + height > clickedPos.y;
     });
     return idx;
 }

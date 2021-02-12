@@ -91,11 +91,10 @@ function onEditMemeText(elTextInput) {
     if (gCurrLnIdx === undefined) {
         createNewLine(gElCanvas.width, gElCanvas.height, gCurrColor, gCurrFont);
         gCurrLnIdx = 0;
-    };
+    }
     const txt = elTextInput.value;
     updateMemeTxt(gCurrLnIdx, txt);
     renderCanvas();
-  
 }
 
 function updateMemeTxtInput() {
@@ -108,14 +107,13 @@ function emptyMemeTxtInput() {
 
 function onChangeSize(sizeDiff) {
     if (isNoneSelected()) return;
-    if(gCurrStickerIdx === undefined){
-         changeElmSize(gCurrLnIdx, sizeDiff, true);
+    if (gCurrStickerIdx === undefined) {
+        changeElmSize(gCurrLnIdx, sizeDiff, true);
         renderCanvas();
-        return;}
+        return;
+    }
     changeElmSize(gCurrStickerIdx, sizeDiff, false);
     renderCanvas();
-    
-
 }
 
 function onChangeAlign(align) {
@@ -208,10 +206,10 @@ function addMemesText() {
 function addMemesStickers() {
     const currStickers = getMemeStickers();
     currStickers.forEach((sticker, idx) => {
-        const{src,width,height,pos} = sticker;
+        const { src, width, height, pos } = sticker;
         const img = new Image();
         img.src = src;
-        const stickerH = (img.height/img.width ) * width;
+        const stickerH = (img.height / img.width) * width;
         setStickerH(idx, stickerH);
         gCtx.drawImage(img, pos.x, pos.y, width, stickerH);
     });
@@ -298,8 +296,9 @@ function onOpenGallery() {
 function renderGallery() {
     let allImgs = getImages();
     if (gCurrSearchWord && gCurrSearchWord !== 'all') allImgs = getRelevantImgs(allImgs);
-
-    let strHtml = allImgs
+    let strHtml =
+        '<div class="file-input-container img-item"><h2>Choose your own image!</h2><input type="file" class="img-item file-input btn" name="image" onchange="onImgInput(event)"/></div>';
+    strHtml += allImgs
         .map((img) => {
             return `<img class="img-item" src="${img.url}" onclick="onChooseImg(${img.id})" />`;
         })
@@ -367,9 +366,10 @@ function onSearchImg(ev) {
     renderGallery();
 }
 
-function onChooseImg(id) {
+function onChooseImg(idx = -1, imgSrc) {
+    console.log('imgSrc:', imgSrc);
     initTxtCtrls();
-    setMemeImage(id);
+    setMemeImage(idx, imgSrc);
     document.body.classList.remove('show-gallery');
     document.querySelector('.gallery-container').classList.add('hide');
     document.querySelector('.meme-editor').classList.remove('hide');
@@ -480,7 +480,7 @@ function getEvPos(ev) {
 // on submit call to this function
 
 function onDownloadImg() {
-    resetIdxs()
+    resetIdxs();
     renderCanvas();
     setTimeout(setDownloadLink, 700);
 }
@@ -494,7 +494,7 @@ function setDownloadLink() {
 
 function uploadImg(elForm, ev) {
     ev.preventDefault();
-    resetIdxs()
+    resetIdxs();
     renderCanvas();
     document.getElementById('imgData').value = gElCanvas.toDataURL('image/jpeg');
 
@@ -529,7 +529,7 @@ function doUploadImg(elForm, onSuccess) {
 }
 
 function onSaveImg() {
-    resetIdxs()
+    resetIdxs();
     renderCanvas();
     setTimeout(setSaveLink, 700);
 }
@@ -554,11 +554,27 @@ function onCloseDownloadShareModal() {
 }
 
 function toggleModalScreen(strHtml) {
-    if(strHtml) document.querySelector('.download-share.modal').innerHTML = strHtml;
+    if (strHtml) document.querySelector('.download-share.modal').innerHTML = strHtml;
     document.body.classList.toggle('open-modal');
 }
 
-function resetIdxs(){
+function resetIdxs() {
     gCurrLnIdx = undefined;
     gCurrStickerIdx = undefined;
+}
+
+function onImgInput(ev) {
+    loadImageFromInput(ev);
+}
+
+function loadImageFromInput(ev) {
+    document.querySelector('.share-container').innerHTML = '';
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+        var img = new Image();
+        img.src = event.target.result;
+        onChooseImg(-1, event.target.result);
+    };
+    reader.readAsDataURL(ev.target.files[0]);
 }
