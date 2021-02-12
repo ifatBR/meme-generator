@@ -88,10 +88,14 @@ function updateCurrElement(idx, isLine) {
 }
 
 function onEditMemeText(elTextInput) {
-    if (gCurrLnIdx === undefined) onAddLine();
+    if (gCurrLnIdx === undefined) {
+        createNewLine(gElCanvas.width, gElCanvas.height, gCurrColor, gCurrFont);
+        gCurrLnIdx = 0;
+    };
     const txt = elTextInput.value;
     updateMemeTxt(gCurrLnIdx, txt);
     renderCanvas();
+  
 }
 
 function updateMemeTxtInput() {
