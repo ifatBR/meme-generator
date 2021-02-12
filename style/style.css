@@ -244,7 +244,7 @@ body.open-memes .btn-memes {
 .cntrls-container {
     background-color: #383b42;
     width: 500px;
-    height: 500px;
+    height: 520px;
     padding: 15px 30px;
 }
 
@@ -448,10 +448,6 @@ body.open-memes .btn-memes {
     margin:auto;
 }
 
-.stickers>*:not(:last-child){
-    margin-inline-end: 20px;
-}
-
 .btn-browse {
     background-color: transparent;
     position: absolute;
@@ -627,6 +623,10 @@ body.more-menu .trandy-words {
     justify-content: space-between;
 }
 
+.flex.space-around{
+    justify-content: space-around;
+}
+
 .justify-center {
     justify-content: center;
 }
@@ -707,7 +707,7 @@ body.open-modal .modal {
 
     .cntrls-container {
         width: 400px;
-        height: 400px;
+        height: 480px;
         padding: 20px;
     }
 
@@ -759,7 +759,7 @@ body.open-modal .modal {
 
     .cntrls-container {
         width: 350px;
-        height: 380px;
+        height: 450px;
         padding: 20px 20px;
         margin-bottom: 20px;
     }
@@ -787,6 +787,18 @@ body.open-modal .modal {
         font-size: 1em;
         padding: 10px 0;
     }
+
+    .stickers-container {
+        height: 65px;
+
+    }
+
+    
+    .stickers-container .stickers > *{
+        height:55px;
+    }
+
+
 
     .gallery-header {
         margin-bottom: 25px;
@@ -935,7 +947,7 @@ body.open-modal .modal {
 
     .cntrls-container {
         width: 310px;
-        height: 350px;
+        height: 435px;
         padding: 15px 15px;
     }
 
