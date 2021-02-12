@@ -71,6 +71,7 @@ a {
 button, input, select, form {
     border: none;
     outline: none;
+    cursor:pointer;
 }
 
 button:focus, input:focus, select:focus, form:focus{
@@ -177,7 +178,7 @@ button:focus, input:focus, select:focus, form:focus{
 .down {
     background-image: linear-gradient(#2dadca, #5abed8,#2dadca);
     border-top-color: #81d0e4;
-    border-bottom-color: #41b2cf;
+    border-bottom-color: #4cbdda;
 }
 
 .add-ln {
@@ -255,22 +256,36 @@ button:focus, input:focus, select:focus, form:focus{
     padding-left: 20px;
 }
 
-.underline {
+.stroke {
     text-decoration: underline;
 }
 
-
-.color input {
-    height:95%;
-    width: 95%;
-    border: none;
-    background-color: transparent;
-    outline: none;
+.ctrl-btn.color{
+    position: relative;
+}
+.ctrl-btn.color::before{
+    content: '\f53f';
 }
 
-.btn.download, .btn.share{
-    padding:10px;
-    width: 45%;
+.color input {
+    height:100%;
+    width: 100%;
+    background-color: transparent;
+    outline: none;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    border-radius:10px;
+}
+
+.color input::-webkit-color-swatch {
+    display:none;
+}
+
+.btn.btn-share{
+    padding:10px 0;
     border-radius: 10px;
     text-align: center;
     font-size: 1.25em;
@@ -278,15 +293,25 @@ button:focus, input:focus, select:focus, form:focus{
 }
 
 .btn.download{
+    width: 35%;
     background-color: #8f44bb ;
     border-top-color: #bf84da;
     border-bottom-color: #9c52c7;
 }
+
+.btn.save{
+    width: 25%;
+    background-color: #57c7e0;
+    border-top-color: #7cd2e7;
+    border-bottom-color: #5dd0ec;
+}
 .btn.share{
+    width: 30%;
     background-color: #1e7cd3;
     border-top-color: #54b2e8;
-    border-bottom-color: #2674bd;
+    border-bottom-color: #3a8fdf;
 }
+
 
 /* Image Gallery */
 
@@ -531,7 +556,7 @@ body.open-modal .modal{
         margin-bottom:30px;
     }
 
-    .btn.download, .btn.share{
+    .btn.btn-share{
         font-size: 1.15em;
     }
 
@@ -584,10 +609,17 @@ body.open-modal .modal{
         gap: 10px 10px;
         align-content: center;
     }
+
     .select-font{
         font-size:1.25em;
         padding-left:10px;
     }
+
+    .btn.btn-share{
+        font-size: 1em;
+        padding: 10px 0;
+    }
+
     .gallery-header {  
         margin-bottom: 25px;
     }
@@ -686,10 +718,10 @@ body.open-modal .modal{
         grid-template-columns: repeat(3,1fr);
     }    
 
-    .btn.download, .btn.share{
+    /* .btn.btn-share{
         font-size: 1em;
-        padding: 15px;
-    }
+        padding: 15px 0;
+    } */
 }
 
 @media (max-width: 470px) {
@@ -717,9 +749,9 @@ body.open-modal .modal{
         margin-bottom: 20px;
     }
 
-    .btn.download, .btn.share{
+    .btn.btn-share{
         font-size: 1em;
-        padding: 10px;
+        padding: 10px 0;
     }
 
     .gallery-container .trandy-words-container {

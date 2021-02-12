@@ -132,7 +132,7 @@ function renderCanvas() {
     const img = new Image();
     img.src = getImgSrc();
     img.onload = () => {
-        gCurrRatio = calculateImgRatio(img);
+        gCurrRatio = img.height / img.width;
         resizeCanvas()
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
         addMemesText();
@@ -189,9 +189,6 @@ function renderGallery() {
     renderKeyWords();
 }
 
-function calculateImgRatio(img) {
-    return img.height / img.width;
-}
 
 function initKeyWords() {
     updateKeywords();
@@ -341,22 +338,36 @@ function getEvPos(ev) {
 //Download& share
 
 // on submit call to this function
+
+function onDownloadImg() {
+    gCurrLnIdx = undefined;
+    renderCanvas();
+    setTimeout(setDownloadLink, 700);
+}
+
+function setDownloadLink(){
+    var imgContent = gElCanvas.toDataURL('image/jpeg');
+    const strHtml = `<a href="${imgContent}" class="btn start-action" download="Awesomeme" 
+    onClick="onCloseDownloadShareModal()">Click to download</a>`;
+    toggleModalScreen(strHtml);
+}
+
 function uploadImg(elForm, ev) {
     ev.preventDefault();
+    gCurrLnIdx = undefined;
+    renderCanvas();
     document.getElementById('imgData').value = gElCanvas.toDataURL('image/jpeg');
 
     // A function to be called if request succeeds
     function onSuccess(uploadedImgUrl) {
         uploadedImgUrl = encodeURIComponent(uploadedImgUrl);
-        document.querySelector('.download-share.modal').classList.remove('hide');
-        toggleModalScreen();
-
-        document.querySelector('.download-share.modal').innerHTML = `
+        const strHtml = `
         <a class="btn start-action" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" 
         title="Share on Facebook" target="_blank" onclick="onCloseDownloadShareModal();
         window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
         Click to share on facebook   
         </a>`;
+        toggleModalScreen(strHtml);
     }
 
     doUploadImg(elForm, onSuccess);
@@ -377,27 +388,17 @@ function doUploadImg(elForm, onSuccess) {
         });
 }
 
-function onDownloadImg() {
-    gCurrLnIdx = undefined;
-    renderCanvas();
-    document.querySelector('.download-share.modal').classList.remove('hide');
-    setTimeout(showDownloadShareModal, 700);
+function onSaveImg(){
+
 }
 
-function showDownloadShareModal() {
-    toggleModalScreen();
-    var imgContent = gElCanvas.toDataURL('image/jpeg');
-    const strHtml = `<a href="${imgContent}" class="btn start-action" download="Awesomeme" 
-    onClick="onCloseDownloadShareModal()">Click to download</a>`;
-    document.querySelector('.download-share.modal').innerHTML = strHtml;
-}
 
 function onCloseDownloadShareModal() {
     toggleModalScreen();
-    document.querySelector('.download-share.modal').classList.add('hide');
     gCurrLnIdx = getLinesCount() ? 0 : undefined;
 }
 
-function toggleModalScreen() {
+function toggleModalScreen(strHtml) {
+    document.querySelector('.download-share.modal').innerHTML = strHtml;
     document.body.classList.toggle('open-modal');
 }

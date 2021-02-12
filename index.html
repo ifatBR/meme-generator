@@ -53,13 +53,14 @@
                             <option value="righteous">Righteous</option>
                             <option value="pacifico">Pacifico</option>
                         </select>
-                        <button class="ctrl-btn underline" onclick="onToggleStroke()">S</button>
+                        <button class="ctrl-btn stroke" onclick="onToggleStroke()">S</button>
                         <button class="ctrl-btn fa-btn color"><input type="color" onchange="onSelectColor(this)" value="#cc2e2e" /></button>
                     </div>
                     <form class="flex space-between" action="" method="POST" enctype="multipart/form-data" onsubmit="uploadImg(this, event)">
                         <input name="img" id="imgData" type="hidden" />
-                        <button class="btn three-d share" type="submit">Publish</button>
-                        <a class="btn three-d download" href="#" onclick="onDownloadImg()">Download</a>
+                        <button class="btn three-d btn-share share" type="submit">Publish</button>
+                        <a class="btn three-d btn-share save" href="#" onclick="onSaveImg()">Save</a>
+                        <a class="btn three-d btn-share download" href="#" onclick="onDownloadImg()">Download</a>
                     </form>
                     <div class="share-container"></div>
                     <div class="download-share modal"></div>
