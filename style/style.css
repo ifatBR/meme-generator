@@ -48,6 +48,16 @@
     src: url(../fonts/Pacifico/Pacifico-Regular.ttf);
 }
 
+@font-face {
+    font-family: verla-hebrew;
+    src: url(../fonts/Varela_Round/VarelaRound-Regular.ttf);
+}
+
+@font-face {
+    font-family: secular-hebrew;
+    src: url(../fonts/Secular_One/SecularOne-Regular.ttf);
+}
+
 * {
     box-sizing: border-box;
 }
@@ -418,6 +428,11 @@ body.open-memes .btn-memes {
     border-bottom-color: #3a8fdf;
 }
 
+.stickers-container{
+    height: 35px;
+    width: 100%;
+    background-color: #fff;
+}
 /* Image Gallery */
 
 .gallery-container {

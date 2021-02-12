@@ -44,7 +44,7 @@ var gImgs = [
     { id: 25, url: 'img/25.jpg', keywords: ['happy', 'woman', 'shouting', 'celebrity'] },
 ];
 
-var gSavedMemes;
+var gSavedMemes=[];
 const SAVED_MEMES_KEY = 'mySavedMemes';
 
 function getSavedMemes() {
@@ -134,7 +134,7 @@ function resetLines() {
     gMeme.lines = [];
 }
 
-function createNewLine(x, currColor) {
+function createNewLine(x, currColor, currFont) {
     const lnsCount = getLinesCount();
     if (gMeme.lines[lnsCount - 1]?.txt === '') return;
     let y = 40;
@@ -147,7 +147,7 @@ function createNewLine(x, currColor) {
         align: 'center',
         isStroke: true,
         color: currColor,
-        font: 'impact',
+        font: currFont,
         x: x,
         y: y,
     });

@@ -16,6 +16,13 @@ function init() {
     renderGallery();
 }
 
+
+function initTxtCtrls(){
+    document.querySelector('.color input').value = '#cc2e2e';
+    gCurrFont= 'impact';
+    document.querySelector('.select-font').value = gCurrFont;
+}
+
 function onSwitchLines() {
     if (gCurrLnIdx === undefined) return;
     gCurrLnIdx++;
@@ -30,7 +37,7 @@ function onMoveCurrLn(moveDiff) {
 }
 
 function onAddLine() {
-    createNewLine(gElCanvas.width / 2, gCurrColor);
+    createNewLine(gElCanvas.width / 2, gCurrColor, gCurrFont);
     gCurrLnIdx = getLinesCount() - 1;
     emptyMemeTxtInput();
     renderCanvas();
@@ -64,7 +71,6 @@ function addMemesText() {
     lnsObjs.forEach((lnObj, lnIdx) => {
         const { txt, x, y } = lnObj;
         const fontFam = lnObj.font;
-
         document.fonts.load('40px ' + fontFam).then(() => {
             if (lnObj.isStroke) {
                 gCtx.strokeStyle = lnObj.color;
@@ -105,6 +111,7 @@ function onChangeAlign(align) {
 }
 
 function onChangeFont(elSelectFont) {
+    if (gCurrLnIdx === undefined) return;
     gCurrFont = elSelectFont.value;
     const lnObj = getLnObjectByIdx(gCurrLnIdx);
     lnObj.font = gCurrFont;
@@ -270,6 +277,7 @@ function onSearchImg(ev) {
 
 function onChooseImg(id) {
     resetLines();
+    initTxtCtrls();
     setMemeImage(id);
     document.body.classList.remove('show-gallery');
     document.querySelector('.gallery-container').classList.add('hide');
