@@ -24,7 +24,7 @@
 
         <main class="main-container">
             
-            <section class="meme-editor main-container flex space-between wrap hide">
+            <section class="meme-editor main-container flex space-between wrap ">
                 <div class="canvas-container-heilo round-corners">
                     <div class="canvas-container round-corners">
                         <canvas id="main-canvas" width="400" height="400"></canvas>
@@ -59,7 +59,7 @@
                         <button class="ctrl-btn fa-btn color"><input type="color" onchange="onSelectColor(this)" value="#cc2e2e" /></button>
                     </div>
                     <form
-                        class="flex space-between"
+                        class="share-btns flex space-between"
                         action=""
                         method="POST"
                         enctype="multipart/form-data"
@@ -71,6 +71,9 @@
                         <a class="btn three-d btn-share download" href="#" onclick="onDownloadImg()">Download</a>
                     </form>
                     <div class="stickers-container">
+                        <button class="btn-browse fa-btn browse-left"onclick="onChanePage(-1)"></button>
+                        <div class="stickers flex align-center justify-center"></div>
+                        <button class="btn-browse fa-btn browse-right"onclick="onChanePage(1)"></button>
                     </div>
                    
                 </section>

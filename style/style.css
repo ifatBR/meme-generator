@@ -66,6 +66,7 @@ body {
     margin: 0;
     background-color: #22252c;
     background-size: cover;
+    user-select: none; 
 }
 
 html {
@@ -244,7 +245,7 @@ body.open-memes .btn-memes {
     background-color: #383b42;
     width: 500px;
     height: 500px;
-    padding: 30px 30px;
+    padding: 15px 30px;
 }
 
 .meme-txt {
@@ -256,7 +257,7 @@ body.open-memes .btn-memes {
     border-radius: 2em;
     border: 5px outset;
     width: 100%;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .ctrl-btn {
@@ -271,7 +272,7 @@ body.open-memes .btn-memes {
 }
 
 .ctrl-btns {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .three-d {
@@ -337,7 +338,7 @@ body.open-memes .btn-memes {
     gap: 15px 30px;
     grid-template-columns: repeat(5, 1fr);
     border-radius: 15px;
-    margin-bottom: 45px;
+    margin-bottom: 20px;
 }
 
 .bigger::after {
@@ -400,8 +401,12 @@ body.open-memes .btn-memes {
     display: none;
 }
 
+.share-btns{
+    margin-bottom:20px;
+}
+
 .btn.btn-share {
-    padding: 10px 0;
+    padding: 7px 0;
     border-radius: 10px;
     text-align: center;
     font-size: 1.25em;
@@ -421,6 +426,7 @@ body.open-memes .btn-memes {
     border-top-color: #7cd2e7;
     border-bottom-color: #5dd0ec;
 }
+
 .btn.share {
     width: 30%;
     background-color: #1e7cd3;
@@ -428,11 +434,51 @@ body.open-memes .btn-memes {
     border-bottom-color: #3a8fdf;
 }
 
-.stickers-container{
-    height: 35px;
+.stickers-container {
+    height: 80px;
     width: 100%;
     background-color: #fff;
+    border-radius: 3em;
+    position: relative;
 }
+
+.stickers{
+    width: 80%;
+    height: 100%;
+    margin:auto;
+}
+
+.stickers>*:not(:last-child){
+    margin-inline-end: 20px;
+}
+
+.btn-browse {
+    background-color: transparent;
+    position: absolute;
+    top:50%;
+    transform: translateY(-50%);
+}
+
+.browse-right {
+    right: 10px;
+}
+
+.browse-left {
+    left: 10px;
+}
+
+.browse-right::before {
+    content: '\f054';
+}
+
+.browse-left::before {
+    content: '\f053';
+}
+
+.stickers-container .stickers > *{
+    height:70px;
+}
+
 /* Image Gallery */
 
 .gallery-container {
@@ -440,7 +486,7 @@ body.open-memes .btn-memes {
     border: 5px solid #383b42;
     border-radius: 10px;
     height: 80vh;
-    overflow-y:scroll;
+    overflow-y: scroll;
     overflow-x: hidden;
 }
 
@@ -559,7 +605,11 @@ body.more-menu .trandy-words {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 10px;;
+}
+
+.img-item:hover{
+    cursor:pointer;
 }
 
 /* Helpers */
@@ -818,9 +868,8 @@ body.open-modal .modal {
         margin-left: 20px;
     }
 
-
     .gallery-container {
-        overflow-y:unset;
+        overflow-y: unset;
         overflow-x: unset;
         height: 100%;
     }
@@ -926,6 +975,4 @@ body.open-modal .modal {
         grid-auto-rows: 1fr;
         gap: 20px;
     }
-
-    
 }

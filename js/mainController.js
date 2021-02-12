@@ -2,6 +2,7 @@
 var gElCanvas;
 var gCtx;
 var gCurrLnIdx;
+var gCurrStickerIdx;
 var gElDownloadLink;
 const gTouchEvs = ['touchstart', 'touchmove', 'touchend'];
 var gCurrFont = 'impact';
@@ -11,16 +12,20 @@ var gCurrColor = '#cc2e2e';
 var gCurrRatio = 1;
 var gIsDragging = false;
 var gStartPos;
+
 function init() {
     initKeyWords();
     renderGallery();
+    initStickers();
+    renderStickers();
 }
-
 
 function initTxtCtrls(){
     document.querySelector('.color input').value = '#cc2e2e';
     gCurrFont= 'impact';
     document.querySelector('.select-font').value = gCurrFont;
+    gStickerBrowseIdx = 1;
+    resetLines();
 }
 
 function onSwitchLines() {
@@ -133,6 +138,18 @@ function onSelectColor(elColorInput) {
     changeColor(gCurrLnIdx, color);
     renderCanvas();
 }
+
+function renderStickers(){
+    let stickers = getStickers();
+    const strHtml = stickers.map((sticker) => `<img src="img/stickers/${sticker.url}">`).join('');
+    document.querySelector('.stickers').innerHTML = strHtml;
+}
+
+function onChanePage(pageDiff){
+    changePage(pageDiff);
+    renderStickers()
+}
+
 
 function renderCanvas() {
     const img = new Image();
@@ -276,7 +293,6 @@ function onSearchImg(ev) {
 }
 
 function onChooseImg(id) {
-    resetLines();
     initTxtCtrls();
     setMemeImage(id);
     document.body.classList.remove('show-gallery');

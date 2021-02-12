@@ -17,32 +17,37 @@ var gMeme = {
 };
 
 var gImgs = [
-    { id: 1, url: 'img/1.jpg', keywords: ['politics', 'angry', 'man', 'crazy'] },
-    { id: 2, url: 'img/2.jpg', keywords: ['animals', 'cute', 'dog'] },
-    { id: 3, url: 'img/3.jpg', keywords: ['animals', 'baby', 'cute', 'sleep', 'dog'] },
-    { id: 4, url: 'img/4.jpg', keywords: ['animals', 'cute', 'sleep', 'cat'] },
-    { id: 5, url: 'img/5.jpg', keywords: ['baby', 'win', 'success'] },
-    { id: 6, url: 'img/6.jpg', keywords: ['crazy', 'funny', 'man', 'smiling', 'explaining'] },
-    { id: 7, url: 'img/7.jpg', keywords: ['baby', 'funny', 'cute', 'surprise'] },
-    { id: 8, url: 'img/8.jpg', keywords: ['man', 'smiling', 'smug'] },
-    { id: 9, url: 'img/9.jpg', keywords: ['baby', 'evil', 'laughing'] },
-    { id: 10, url: 'img/10.jpg', keywords: ['politics', 'laughing', 'man'] },
-    { id: 11, url: 'img/11.jpg', keywords: ['man', 'kissing', 'sports'] },
-    { id: 12, url: 'img/12.jpg', keywords: ['man', 'explaining', 'pointing'] },
-    { id: 13, url: 'img/13.jpg', keywords: ['man', 'cheers', 'smiling', 'movie', 'celebrity'] },
-    { id: 14, url: 'img/14.jpg', keywords: ['man', 'seriouse', 'sunglasses', 'movie'] },
-    { id: 15, url: 'img/15.jpg', keywords: ['man', 'explaining', 'movie'] },
-    { id: 16, url: 'img/16.jpg', keywords: ['man', 'laughing', 'surprised', 'movie'] },
-    { id: 17, url: 'img/17.jpg', keywords: ['man', 'explaining', 'pointing', 'politics'] },
-    { id: 18, url: 'img/18.jpg', keywords: ['pointing', 'movie', 'explaining', 'scared', 'sad'] },
-    { id: 19, url: 'img/19.jpg', keywords: ['surprised', 'angry', 'shouting', 'man'] },
-    { id: 20, url: 'img/20.jpg', keywords: ['happy', 'dancing', 'woman', 'movie'] },
-    { id: 21, url: 'img/21.jpg', keywords: ['evil', 'quotes', 'movie'] },
-    { id: 22, url: 'img/22.jpg', keywords: ['dancing', 'baby', 'happy', 'funny'] },
-    { id: 23, url: 'img/23.jpg', keywords: ['angry', 'ugly', 'stupid', 'man', 'pilitician'] },
-    { id: 24, url: 'img/24.jpg', keywords: ['animals', 'dog', 'funny', 'cute'] },
-    { id: 25, url: 'img/25.jpg', keywords: ['happy', 'woman', 'shouting', 'celebrity'] },
+    { id: 101, url: 'img/1.jpg', keywords: ['politics', 'angry', 'man', 'crazy'] },
+    { id: 102, url: 'img/2.jpg', keywords: ['animals', 'cute', 'dog'] },
+    { id: 103, url: 'img/3.jpg', keywords: ['animals', 'baby', 'cute', 'sleep', 'dog'] },
+    { id: 104, url: 'img/4.jpg', keywords: ['animals', 'cute', 'sleep', 'cat'] },
+    { id: 105, url: 'img/5.jpg', keywords: ['baby', 'win', 'success'] },
+    { id: 106, url: 'img/6.jpg', keywords: ['crazy', 'funny', 'man', 'smiling', 'explaining'] },
+    { id: 107, url: 'img/7.jpg', keywords: ['baby', 'funny', 'cute', 'surprise'] },
+    { id: 108, url: 'img/8.jpg', keywords: ['man', 'smiling', 'smug'] },
+    { id: 109, url: 'img/9.jpg', keywords: ['baby', 'evil', 'laughing'] },
+    { id: 110, url: 'img/10.jpg', keywords: ['politics', 'laughing', 'man'] },
+    { id: 111, url: 'img/11.jpg', keywords: ['man', 'kissing', 'sports'] },
+    { id: 112, url: 'img/12.jpg', keywords: ['man', 'explaining', 'pointing'] },
+    { id: 113, url: 'img/13.jpg', keywords: ['man', 'cheers', 'smiling', 'movie', 'celebrity'] },
+    { id: 114, url: 'img/14.jpg', keywords: ['man', 'seriouse', 'sunglasses', 'movie'] },
+    { id: 115, url: 'img/15.jpg', keywords: ['man', 'explaining', 'movie'] },
+    { id: 116, url: 'img/16.jpg', keywords: ['man', 'laughing', 'surprised', 'movie'] },
+    { id: 117, url: 'img/17.jpg', keywords: ['man', 'explaining', 'pointing', 'politics'] },
+    { id: 118, url: 'img/18.jpg', keywords: ['pointing', 'movie', 'explaining', 'scared', 'sad'] },
+    { id: 119, url: 'img/19.jpg', keywords: ['surprised', 'angry', 'shouting', 'man'] },
+    { id: 120, url: 'img/20.jpg', keywords: ['happy', 'dancing', 'woman', 'movie'] },
+    { id: 121, url: 'img/21.jpg', keywords: ['evil', 'quotes', 'movie'] },
+    { id: 122, url: 'img/22.jpg', keywords: ['dancing', 'baby', 'happy', 'funny'] },
+    { id: 123, url: 'img/23.jpg', keywords: ['angry', 'ugly', 'stupid', 'man', 'pilitician'] },
+    { id: 124, url: 'img/24.jpg', keywords: ['animals', 'dog', 'funny', 'cute'] },
+    { id: 125, url: 'img/25.jpg', keywords: ['happy', 'woman', 'shouting', 'celebrity'] },
 ];
+
+var gStickers=[];
+
+const STICKERS_PAGE_SIZE = 3;
+var gStickersPageIdx = 0;
 
 var gSavedMemes=[];
 const SAVED_MEMES_KEY = 'mySavedMemes';
@@ -81,6 +86,24 @@ function getKeywords() {
 
 function increaseWordRate(clickedWord) {
     gKeywords[clickedWord]++;
+}
+
+function initStickers(){
+    for(var i=1; i<9;i++){
+        gStickers.push({id:makeId(), url:`${i}.png`})
+    }
+}
+
+function getStickers(){
+    let startIdx = gStickersPageIdx * STICKERS_PAGE_SIZE;
+    return gStickers.slice(startIdx, startIdx+STICKERS_PAGE_SIZE)
+    
+}
+
+function changePage(pageDiff){
+    gStickersPageIdx += pageDiff;
+    if (gStickersPageIdx * STICKERS_PAGE_SIZE >= gStickers.length ) gStickersPageIdx = 0;
+    else if(gStickersPageIdx < 0) gStickersPageIdx = Math.floor(gStickers.length/STICKERS_PAGE_SIZE) ;
 }
 
 function setMemeImage(id) {
