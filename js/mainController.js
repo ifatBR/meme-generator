@@ -16,10 +16,10 @@ function init() {
     renderGallery();
 }
 
-function onSwitchLines(){
+function onSwitchLines() {
     if (gCurrLnIdx === undefined) return;
     gCurrLnIdx++;
-    if(gCurrLnIdx > (getLinesCount() -1)) gCurrLnIdx = 0;
+    if (gCurrLnIdx > getLinesCount() - 1) gCurrLnIdx = 0;
     renderCanvas();
 }
 
@@ -44,7 +44,6 @@ function onDeleteLine() {
     if (getLinesCount() === 0) gCurrLnIdx = undefined;
     renderCanvas();
 }
-
 
 function updateCurrLine(lnIdx) {
     if (lnIdx < 0) return;
@@ -133,7 +132,7 @@ function renderCanvas() {
     img.src = getImgSrc();
     img.onload = () => {
         gCurrRatio = img.height / img.width;
-        resizeCanvas()
+        resizeCanvas();
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
         addMemesText();
         setTimeout(showFocusBorder, 20);
@@ -166,6 +165,11 @@ function resizeCanvas() {
 }
 
 //Gallery functions
+
+function onToggleMemesMenu(){
+    document.body.classList.toggle('open-memes');
+}
+
 function onOpenGallery() {
     emptyMemeTxtInput();
     gCurrLnIdx = undefined;
@@ -189,7 +193,6 @@ function renderGallery() {
     renderKeyWords();
 }
 
-
 function initKeyWords() {
     updateKeywords();
     renderWordsList();
@@ -207,14 +210,13 @@ function renderKeyWords() {
     const screenWidth = window.innerWidth;
     let amount;
     let basicSize;
-    if (screenWidth > 1080){
-         amount = 15;
-         basicSize = 12;
-    }
-    else if (screenWidth > 630) amount = 12;
-    else{
-         amount = 9;
-         basicSize = 10;
+    if (screenWidth > 1080) {
+        amount = 15;
+        basicSize = 12;
+    } else if (screenWidth > 630) amount = 12;
+    else {
+        amount = 9;
+        basicSize = 10;
     }
     const trandyKeywordsArr = Object.entries(getKeywords()).slice(0, amount);
     const trandyKeywords = Object.fromEntries(trandyKeywordsArr);
@@ -290,7 +292,6 @@ function addTouchListeners() {
     gElCanvas.addEventListener('touchend', onUp);
 }
 
-
 function onDown(ev) {
     const pos = getEvPos(ev);
     const clickedLineIdx = getClickedLine(pos);
@@ -345,8 +346,8 @@ function onDownloadImg() {
     setTimeout(setDownloadLink, 700);
 }
 
-function setDownloadLink(){
-    var imgContent = gElCanvas.toDataURL('image/jpeg');
+function setDownloadLink() {
+    const imgContent = gElCanvas.toDataURL('image/jpeg');
     const strHtml = `<a href="${imgContent}" class="btn start-action" download="Awesomeme" 
     onClick="onCloseDownloadShareModal()">Click to download</a>`;
     toggleModalScreen(strHtml);
@@ -388,10 +389,11 @@ function doUploadImg(elForm, onSuccess) {
         });
 }
 
-function onSaveImg(){
-
+function onSaveImg() {
+    const imgContent = gElCanvas.toDataURL('image/jpeg');
+    console.log('saving');
+    addToSavedMemes(imgContent);
 }
-
 
 function onCloseDownloadShareModal() {
     toggleModalScreen();

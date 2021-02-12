@@ -29,21 +29,33 @@ var gImgs = [
     { id: 10, url: 'img/10.jpg', keywords: ['politics', 'laughing', 'man'] },
     { id: 11, url: 'img/11.jpg', keywords: ['man', 'kissing', 'sports'] },
     { id: 12, url: 'img/12.jpg', keywords: ['man', 'explaining', 'pointing'] },
-    { id: 13, url: 'img/13.jpg', keywords: ['man', 'cheers', 'smiling', 'movie','celebrity'] },
+    { id: 13, url: 'img/13.jpg', keywords: ['man', 'cheers', 'smiling', 'movie', 'celebrity'] },
     { id: 14, url: 'img/14.jpg', keywords: ['man', 'seriouse', 'sunglasses', 'movie'] },
     { id: 15, url: 'img/15.jpg', keywords: ['man', 'explaining', 'movie'] },
     { id: 16, url: 'img/16.jpg', keywords: ['man', 'laughing', 'surprised', 'movie'] },
     { id: 17, url: 'img/17.jpg', keywords: ['man', 'explaining', 'pointing', 'politics'] },
     { id: 18, url: 'img/18.jpg', keywords: ['pointing', 'movie', 'explaining', 'scared', 'sad'] },
     { id: 19, url: 'img/19.jpg', keywords: ['surprised', 'angry', 'shouting', 'man'] },
-    { id: 20, url: 'img/20.jpg', keywords: ['happy', 'dancing','woman', 'movie'] },
-    { id: 21, url: 'img/21.jpg', keywords: ['evil', 'quotes','movie'] },
-    { id: 22, url: 'img/22.jpg', keywords: ['dancing', 'baby', 'happy','funny'] },
-    { id: 23, url: 'img/23.jpg', keywords: ['angry','ugly','stupid','man', 'pilitician'] },
-    { id: 24, url: 'img/24.jpg', keywords: ['animals', 'dog','funny','cute'] },
-    { id: 25, url: 'img/25.jpg', keywords: ['happy','woman','shouting','celebrity'] },
+    { id: 20, url: 'img/20.jpg', keywords: ['happy', 'dancing', 'woman', 'movie'] },
+    { id: 21, url: 'img/21.jpg', keywords: ['evil', 'quotes', 'movie'] },
+    { id: 22, url: 'img/22.jpg', keywords: ['dancing', 'baby', 'happy', 'funny'] },
+    { id: 23, url: 'img/23.jpg', keywords: ['angry', 'ugly', 'stupid', 'man', 'pilitician'] },
+    { id: 24, url: 'img/24.jpg', keywords: ['animals', 'dog', 'funny', 'cute'] },
+    { id: 25, url: 'img/25.jpg', keywords: ['happy', 'woman', 'shouting', 'celebrity'] },
 ];
 
+var gSavedMemes = [];
+const SAVED_MEMES_KEY = 'mySavedMemes';
+
+function getSavedMemes() {
+    return loadFromStorage(SAVED_MEMES_KEY);
+}
+
+function addToSavedMemes(imgContent) {
+    const id = makeId();
+    gSavedMemes.push({id,imgContent});
+    return saveToStorage(SAVED_MEMES_KEY, gSavedMemes);
+}
 
 function getImages() {
     return gImgs;
@@ -51,14 +63,13 @@ function getImages() {
 
 function updateKeywords() {
     gImgs.forEach((img) => {
-        img.keywords.forEach((word)=> {
-            if(!gKeywords[word]){
-                 gKeywords[word] = 1;
-                 return
-                }
+        img.keywords.forEach((word) => {
+            if (!gKeywords[word]) {
+                gKeywords[word] = 1;
+                return;
+            }
             gKeywords[word]++;
-
-        })
+        });
     });
 }
 
@@ -69,7 +80,6 @@ function getKeywords() {
 function increaseWordRate(clickedWord) {
     gKeywords[clickedWord]++;
 }
-
 
 function setMemeImage(id) {
     gMeme.selectedImgId = id;
@@ -84,7 +94,6 @@ function getLnObjectByIdx(lnIdx) {
     const idx = getImgIdxById();
     return gMeme.lines[lnIdx];
 }
-
 
 function changeFontSize(lnIdx, sizeDiff) {
     if ((sizeDiff < 0 && gMeme.lines[lnIdx].size < 20) || (sizeDiff > 0 && gMeme.lines[lnIdx].size > 80)) return;
@@ -119,8 +128,8 @@ function getLinesCount() {
     return gMeme.lines.length;
 }
 
-function resetLines(){
-    gMeme.lines=[];
+function resetLines() {
+    gMeme.lines = [];
 }
 
 function createNewLine(x, currColor) {
@@ -136,7 +145,7 @@ function createNewLine(x, currColor) {
         align: 'center',
         isStroke: true,
         color: currColor,
-        font:'impact',
+        font: 'impact',
         x: x,
         y: y,
     });
@@ -157,8 +166,8 @@ function moveLineY(lnIdx, moveDiff) {
 function getClickedLine(clickedPos) {
     const idx = gMeme.lines.findIndex((ln) => {
         let offset = 0;
-        if(ln.align === 'left') offset = ln.width / 2;
-        else if(ln.align === 'right') offset = -ln.width / 2;
+        if (ln.align === 'left') offset = ln.width / 2;
+        else if (ln.align === 'right') offset = -ln.width / 2;
 
         return (
             ln.x - ln.width / 2 + offset < clickedPos.x &&
@@ -171,4 +180,3 @@ function getClickedLine(clickedPos) {
     if (idx < 0) return;
     return idx;
 }
-

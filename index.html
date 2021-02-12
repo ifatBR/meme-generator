@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Memegen</title>
         <link rel="stylesheet" href="style/style.css" />
-        <link rel="icon" type="image/png" href="img/LOGO-fav.png">
+        <link rel="icon" type="image/png" href="img/LOGO-fav.png" />
     </head>
     <body onload="init()">
         <div class="main-screen screen" onclick="onToggleMenu()"></div>
@@ -15,14 +15,15 @@
                 <img class="logo" src="img/LOGO.png" />
                 <ul class="main-nav clean-list flex justify-center">
                     <li><a href="#" onclick="onOpenGallery()">Gallery</a></li>
+                    <li><a href="#" onclick="onToggleMemesMenu()">Memes</a></li>
                     <li><a href="#">About</a></li>
                 </ul>
                 <button class="menu-btn" onclick="onToggleMenu()"></button>
             </div>
         </header>
 
-
-        <main class="main-container">
+        <main class="main-container all">
+        <div class="memes-screen screen" onclick="onToggleMemesMenu()"></div>
             <section class="meme-editor main-container flex space-between wrap hide">
                 <div class="canvas-container-heilo round-corners">
                     <div class="canvas-container round-corners">
@@ -38,7 +39,6 @@
                         <button class="ctrl-btn three-d fa-btn add-ln" onclick="onAddLine()"></button>
                         <button class="ctrl-btn three-d fa-btn delete" onclick="onDeleteLine()"></button>
                     </div>
-
 
                     <div class="edit-font grid">
                         <button class="ctrl-btn bigger" onclick="onChangeFontSize(2)">A</button>
@@ -56,7 +56,13 @@
                         <button class="ctrl-btn stroke" onclick="onToggleStroke()">S</button>
                         <button class="ctrl-btn fa-btn color"><input type="color" onchange="onSelectColor(this)" value="#cc2e2e" /></button>
                     </div>
-                    <form class="flex space-between" action="" method="POST" enctype="multipart/form-data" onsubmit="uploadImg(this, event)">
+                    <form
+                        class="flex space-between"
+                        action=""
+                        method="POST"
+                        enctype="multipart/form-data"
+                        onsubmit="uploadImg(this, event)"
+                    >
                         <input name="img" id="imgData" type="hidden" />
                         <button class="btn three-d btn-share share" type="submit">Publish</button>
                         <a class="btn three-d btn-share save" href="#" onclick="onSaveImg()">Save</a>
@@ -68,7 +74,6 @@
                 </section>
             </section>
 
-
             <section class="gallery-container">
                 <header class="gallery-header flex align-center wrap justify-center">
                     <form class="search-form" onchange="onSearchImg(event)">
@@ -78,14 +83,16 @@
                         </datalist>
                         <button class="search-btn"></button>
                     </form>
-                    <div class="trandy-words-container" >
-                    <ul class="trandy-words clean-list grid  align-center"></ul>
-                    </div>  
+                    <div class="trandy-words-container">
+                        <ul class="trandy-words clean-list grid align-center"></ul>
+                    </div>
                     <button class="btn more gradient-background" onClick="onToggleMoreWords()">More</button>
                 </header>
                 <section class="img-container main-container grid justify-center align-center"></section>
             </section>
         </main>
+        <script src="js/utils.js"></script>
+        <script src="js/storageService.js"></script>
         <script src="js/memeService.js"></script>
         <script src="js/mainController.js"></script>
     </body>
