@@ -123,12 +123,12 @@ function onSelectColor(elColorInput) {
 function renderCanvas() {
     const img = new Image();
     img.src = getImgSrc();
-    gCurrRatio = calculateImgRatio(img);
-
     img.onload = () => {
+        gCurrRatio = calculateImgRatio(img);
+        resizeCanvas()
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
         addMemesText();
-        setTimeout(showFocusBorder, 5);
+        setTimeout(showFocusBorder, 20);
     };
 }
 
@@ -150,8 +150,8 @@ function showFocusBorder() {
 
 function resizeCanvas() {
     const elContainerHeilo = document.querySelector('.canvas-container-heilo');
-    const elContainer = elContainerHeilo.querySelector('.canvas-container');
-    const canvasContainerH = (elContainerHeilo.offsetWidth -14) * gCurrRatio;
+    const elContainer = document.querySelector('.canvas-container');
+    const canvasContainerH = elContainer.offsetWidth * gCurrRatio;
     elContainerHeilo.style.height = canvasContainerH + 'px';
     gElCanvas.width = elContainer.offsetWidth;
     gElCanvas.height = canvasContainerH;
@@ -201,14 +201,21 @@ function renderWordsList() {
 function renderKeyWords() {
     const screenWidth = window.innerWidth;
     let amount;
-    if (screenWidth > 1080) amount = 15;
+    let basicSize;
+    if (screenWidth > 1080){
+         amount = 15;
+         basicSize = 12;
+    }
     else if (screenWidth > 630) amount = 12;
-    else amount = 9;
+    else{
+         amount = 9;
+         basicSize = 10;
+    }
     const trandyKeywordsArr = Object.entries(getKeywords()).slice(0, amount);
     const trandyKeywords = Object.fromEntries(trandyKeywordsArr);
     let strHtml = '';
     for (const word in trandyKeywords) {
-        const fontSize = trandyKeywords[word] >= 24 ? 24 : 12 + trandyKeywords[word];
+        const fontSize = trandyKeywords[word] >= 24 ? 24 : basicSize + trandyKeywords[word];
         strHtml += `<li class="keyword"><a href="#"  onclick="onClickSearchWord('${word}')" 
         style="font-size:${fontSize}px">${word}</a></li>`;
     }
@@ -246,7 +253,6 @@ function onChooseImg(id) {
     gCtx = gElCanvas.getContext('2d');
     addListeners();
     renderCanvas();
-    resizeCanvas();
 }
 
 function onToggleMenu() {

@@ -240,7 +240,7 @@ button:focus, input:focus, select:focus, form:focus{
     vertical-align: top;
     grid-column: span 3;
     font-size: 1.5em;
-    padding-left: 30px;
+    padding-left: 20px;
 }
 
 .underline {
@@ -572,7 +572,10 @@ body.open-modal .modal{
         gap: 10px 10px;
         align-content: center;
     }
-
+    .select-font{
+        font-size:1.25em;
+        padding-left:10px;
+    }
     .gallery-header {  
         margin-bottom: 25px;
     }
@@ -599,7 +602,7 @@ body.open-modal .modal{
         position: fixed;
         right: 0;
         top: 0;
-        width: 350px;
+        width: 250px;
         height: 100vh;
         flex-direction: column;
         justify-content: start;
@@ -655,16 +658,20 @@ body.open-modal .modal{
         margin-left: 20px;
     }
 
+
     .img-container {
         grid-template-columns: repeat(2,160px);
         grid-auto-rows: 160px;
         gap: 15px;
     }
 
+    .gallery-container .trandy-words-container {
+
+        height: 35px;
+    }    
     .gallery-container .trandy-words {
         padding-top:0;
         grid-template-columns: repeat(3,1fr);
-        height: 35px;
     }    
 
     .btn.download, .btn.share{
@@ -683,7 +690,7 @@ body.open-modal .modal{
     }
 
     .canvas-container-heilo {
-        width: 320px;
+        max-width: 320px;
         height: 320px;
         margin-bottom: 20px;
     }
@@ -703,8 +710,11 @@ body.open-modal .modal{
         padding: 10px;
     }
 
+    .gallery-container .trandy-words-container {
+        width: 200px;
+    }
     .gallery-container .trandy-words {
-        width: unset;
+        padding-left:0px;
     }
 
     .keyword a{
