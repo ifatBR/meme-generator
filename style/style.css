@@ -167,23 +167,35 @@ button:focus, input:focus, select:focus, form:focus{
     margin-inline-end: 20px;
 }
 
+.switch{
+    background-image: linear-gradient( #5a71d8, #637ce9, #5a71d8);
+    border-top-color: #8da1fa;
+    border-bottom-color: #5870da;
+}
+
 .up,
 .down {
-    background-image: linear-gradient(90deg, #5abed8, #2dadca, #5abed8);
+    background-image: linear-gradient(#2dadca, #5abed8,#2dadca);
     border-top-color: #81d0e4;
     border-bottom-color: #41b2cf;
 }
 
 .add-ln {
-    background-image: linear-gradient(90deg, #41e359, #39bd4d, #41e359);
+    background-image: linear-gradient( #41e359, #70e982, #41e359);
     border-top-color: #79f78c;
     border-bottom-color: #41e359;
 }
 
 .delete {
-    background-image: linear-gradient(90deg, #d42437, #ea4736, #d42437);
+    background-image: linear-gradient( #d42437, #ea4736, #d42437);
     border-top-color: #df6a5b;
     border-bottom-color: #db4141;
+}
+
+.switch::before {
+    content: '\f362';
+    display:block;
+    transform: rotate(90deg);
 }
 
 .up::before {

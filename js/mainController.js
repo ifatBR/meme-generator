@@ -16,6 +16,19 @@ function init() {
     renderGallery();
 }
 
+function onSwitchLines(){
+    if (gCurrLnIdx === undefined) return;
+    gCurrLnIdx++;
+    if(gCurrLnIdx > (getLinesCount() -1)) gCurrLnIdx = 0;
+    renderCanvas();
+}
+
+function onMoveCurrLn(moveDiff) {
+    if (gCurrLnIdx === undefined) return;
+    moveLineY(gCurrLnIdx, moveDiff);
+    renderCanvas();
+}
+
 function onAddLine() {
     createNewLine(gElCanvas.width / 2, gCurrColor);
     gCurrLnIdx = getLinesCount() - 1;
@@ -32,11 +45,6 @@ function onDeleteLine() {
     renderCanvas();
 }
 
-function onMoveCurrLn(moveDiff) {
-    if (gCurrLnIdx === undefined) return;
-    moveLineY(gCurrLnIdx, moveDiff);
-    renderCanvas();
-}
 
 function updateCurrLine(lnIdx) {
     if (lnIdx < 0) return;
@@ -285,6 +293,7 @@ function addTouchListeners() {
     gElCanvas.addEventListener('touchend', onUp);
 }
 
+
 function onDown(ev) {
     const pos = getEvPos(ev);
     const clickedLineIdx = getClickedLine(pos);
@@ -301,9 +310,7 @@ function onMove(ev) {
     if (gIsDragging) {
         const lnObj = getLnObjectByIdx(gCurrLnIdx);
         const pos = getEvPos(ev);
-        const dx = pos.x - gStartPos.x;
         const dy = pos.y - gStartPos.y;
-        lnObj.x += dx;
         lnObj.y += dy;
         gStartPos = pos;
         renderCanvas();
