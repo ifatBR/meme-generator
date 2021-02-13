@@ -420,12 +420,8 @@ function onDown(ev) {
     const pos = getEvPos(ev);
     const clickedLineIdx = getClickedLineIdx(pos);
     const clickedStickerIdx = geClickedStickerIdx(pos);
-    if (clickedLineIdx < 0 && clickedStickerIdx < 0){
-        gCurrLnIdx = undefined;
-        gCurrStickerIdx = undefined;
-        renderCanvas()
-        return;
-    }
+    if (clickedLineIdx < 0 && clickedStickerIdx < 0) return;
+
     if (clickedStickerIdx < 0) {
         updateCurrElement(clickedLineIdx, true);
         updateMemeTxtInput();
@@ -502,7 +498,7 @@ function onDownloadImg() {
 function setDownloadLink() {
     const imgContent = gElCanvas.toDataURL('image/jpeg');
     const strHtml = `<a href="${imgContent}" class="btn start-action" download="Awesomeme" 
-    onClick="onCloseDownloadShareModal()">Click to download</a>`;
+    onclick="onCloseDownloadShareModal()">Click to download</a>`;
     toggleModalScreen(strHtml);
 }
 
