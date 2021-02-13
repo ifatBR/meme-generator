@@ -65,6 +65,12 @@ function addToSavedMemes(imgContent) {
     return saveToStorage(SAVED_MEMES_KEY, gSavedMemes);
 }
 
+function removeSavedMeme(id){
+    const idx = gSavedMemes.findIndex((savedMeme) => savedMeme.id === id);
+    gSavedMemes.splice(idx,1);
+    saveToStorage(SAVED_MEMES_KEY, gSavedMemes);
+}
+
 function getImages() {
     return gImgs;
 }
@@ -146,7 +152,6 @@ function setMemeImage(id, imgSrc) {
     }
     gMeme.selectedImgId = id;
 }
-
 
 function getImgSrc() {
     const idx = getImgIdxById();

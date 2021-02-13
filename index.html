@@ -16,9 +16,19 @@
                 <ul class="main-nav clean-list flex justify-center">
                     <li><a class="btn-gallery" href="#" onclick="onOpenGallery()">Gallery</a></li>
                     <li><a class="btn-memes" href="#" onclick="onToggleMemesMenu()">Memes</a></li>
-                    <li><a href="#">About</a></li>
+                    <li><a class="btn-about" href="#" onclick="onToggleAboutModal()">About</a></li>
                 </ul>
+                
                 <button class="menu-btn" onclick="onToggleMenu()"></button>
+                <div class="about-screen screen" onclick="onToggleAboutModal()"></div>
+                <div class="about-modal  flex column justify-center">
+                    <button class="close" onclick="onToggleAboutModal()"">X</button>
+                    <p>Created by 
+                       <span>Ifat Braslavi.</span></p>
+                    <p>For more projects, 
+                        visit my git hub:</p>
+                    <a href="https://github.com/ifatBR?tab=repositories" target="_blank">To Ifat's github</a>
+                </div>
             </div>
         </header>
 
@@ -100,7 +110,7 @@
             <div class="modal-screen screen" onclick="onCloseDownloadShareModal()"></div>
 
             <div class="memes-container main-container" onclick="onToggleMemesMenu()">
-                <button class="close-memes">X</button>
+                <button class="close-memes close">X</button>
                 <div class="memes grid align-center justify-center"></div>
             </div>
         </main>

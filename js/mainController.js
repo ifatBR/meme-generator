@@ -264,7 +264,6 @@ function isNoneSelected() {
 function onToggleMemesMenu() {
     if (document.body.classList.contains('open-menu')) onToggleMenu();
     document.body.classList.toggle('open-memes');
-    // document.querySelector('.memes-container').classList.toggle('open-memes');
     renderSavedMemes();
 }
 
@@ -273,10 +272,15 @@ function renderSavedMemes() {
     let strHtml = '<h2>My saved memes</h2>';
     strHtml += savedMemes
         .map((meme) => {
-            return `<img src="${meme.imgContent}" onclick="onDownloadSavedMeme(event,this)">`;
+            return `<img src="${meme.imgContent}" data-id="${meme.id}" onclick="onClickSavedMeme(event,this)">`;
         })
         .join('');
     document.querySelector('.memes').innerHTML = strHtml;
+}
+
+function onToggleAboutModal(){
+    if (document.body.classList.contains('open-menu')) onToggleMenu();
+    document.body.classList.toggle('open-about');
 }
 
 function onOpenGallery() {
@@ -413,7 +417,12 @@ function onDown(ev) {
     const pos = getEvPos(ev);
     const clickedLineIdx = getClickedLineIdx(pos);
     const clickedStickerIdx = geClickedStickerIdx(pos);
-    if (clickedLineIdx < 0 && clickedStickerIdx < 0) return;
+    if (clickedLineIdx < 0 && clickedStickerIdx < 0){
+        gCurrLnIdx = undefined;
+        gCurrStickerIdx = undefined;
+        renderCanvas()
+        return;
+    }
     if (clickedStickerIdx < 0) {
         updateCurrElement(clickedLineIdx, true);
         updateMemeTxtInput();
@@ -433,7 +442,9 @@ function onMove(ev) {
             return;
         }
         moveSticker(pos);
+        return;
     }
+    
 }
 
 function moveSticker(pos) {
@@ -537,15 +548,29 @@ function onSaveImg() {
 function setSaveLink() {
     const imgContent = gElCanvas.toDataURL('image/jpeg');
     addToSavedMemes(imgContent);
-    const strHtml = `<a class="btn start-action" onClick="onCloseDownloadShareModal()">Click to save</a>`;
+    const strHtml = `<a class="btn start-action">Meme has been saved</a>  <div class="modal-btns-container flex space-between"><button onClick="onCloseDownloadShareModal()">Close</button></div`;
     toggleModalScreen(strHtml);
 }
 
-function onDownloadSavedMeme(ev, elImg) {
+function onClickSavedMeme(ev, elImg) {
     ev.stopPropagation();
-    const strHtml = `<a href="${elImg.src}" class="btn start-action" download="Awesomeme" 
-    onClick="onCloseDownloadShareModal()">Click to download</a>`;
+    const strHtml = `<a href="${elImg.src}" class="btn start-action meme-action" download="Awesomeme" 
+    onClick="onCloseDownloadShareModal()">Download meme</a>
+    <a href="#" class="btn start-action meme-action"
+    onClick="onDeleteMeme('${elImg.dataset.id}')">Delete meme</a>`;
     toggleModalScreen(strHtml);
+}
+
+function onDeleteMeme(memeId){
+    toggleModalScreen();
+    const strHtml = `<h2 class="btn start-action">Are you sure?</h2> <div class="modal-btns-container flex space-between"><button onClick="onRemoveMeme('${memeId}')">Yes</button> <button onClick="onCloseDownloadShareModal()">No!</button></div>`;
+    toggleModalScreen(strHtml)
+}
+
+function onRemoveMeme(id){
+    removeSavedMeme(id);
+    renderSavedMemes();
+    onCloseDownloadShareModal()
 }
 
 function onCloseDownloadShareModal() {
