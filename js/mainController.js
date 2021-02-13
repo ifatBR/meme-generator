@@ -374,7 +374,6 @@ function onSearchImg(ev) {
 }
 
 function onChooseImg(idx = -1, imgSrc) {
-    console.log('imgSrc:', imgSrc);
     initTxtCtrls();
     setMemeImage(idx, imgSrc);
     document.body.classList.remove('show-gallery');
