@@ -614,6 +614,7 @@ body.more-menu .trandy-words {
 }
 
 .file-input-container h2{
+    font-size: 1.25em;
     position:absolute;
     top: 50%;
     left:50%;
@@ -621,7 +622,7 @@ body.more-menu .trandy-words {
     width: 100%;
     text-align: center;
     margin:0;
-    padding:10px;
+    padding:10px 20px;
 }
 
 .file-input{
@@ -946,7 +947,7 @@ body.open-modal .modal {
     .img-container {
         grid-template-columns: repeat(autofit, 160px);
         grid-auto-rows: 160px;
-        gap: 15px;
+        gap: 30px;
     }
 }
 
@@ -1001,10 +1002,14 @@ body.open-modal .modal {
         grid-template-columns: 150px;
         grid-template-rows: 150px;
     }
+    .file-input-container h2{
+        font-size: 1.15em;
+        padding: 10px
+    }
 
     .img-container {
-        grid-template-columns: 1fr;
-        grid-auto-rows: 1fr;
+        grid-template-columns: repeat(2, 120px);
+        grid-auto-rows: 130px;
         gap: 20px;
     }
 }
