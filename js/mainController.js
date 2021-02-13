@@ -234,8 +234,11 @@ function showLineFocusBorder() {
     let widthOffst = -width;
     if (lnObj.align === 'left') widthOffst = 0;
     else if (lnObj.align === 'center') widthOffst = -width / 2;
-
-    gCtx.rect(pos.x + widthOffst - 5, pos.y - size * 1.25, width + 10, size * 1.75);
+    const xStart = pos.x + widthOffst - 5;
+    const yStart = pos.y - size
+    const rectW = width + 10;
+    const rectH = size + 15
+    gCtx.rect(xStart, yStart, rectW, rectH);
     gCtx.stroke();
 }
 

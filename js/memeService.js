@@ -260,7 +260,7 @@ function getClickedLineIdx(clickedPos) {
             pos.x - width / 2 + offset < clickedPos.x &&
             pos.x + width / 2 + offset > clickedPos.x &&
             pos.y - size - 5 < clickedPos.y &&
-            pos.y + 10 > clickedPos.y
+            pos.y + 15 > clickedPos.y
         );
     });
     return idx;
