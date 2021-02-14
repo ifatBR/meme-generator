@@ -216,7 +216,6 @@ function onOpenGallery() {
 
 function renderGallery() {
     let allImgs = getImgs();
-    if (gCurrSearchWord && gCurrSearchWord !== 'all') allImgs = getRelevantImgs(allImgs);
     let strHtml =
         '<div class="file-input-container img-item"><h2>Choose your own image!</h2><input type="file" class="img-item file-input btn" name="image" onchange="onImgInput(event)"/></div>';
     strHtml += allImgs
@@ -245,10 +244,9 @@ function renderWordsList() {
 function renderKeyWords() {
     const screenWidth = window.innerWidth;
     let amount;
-    let basicSize;
+    let basicSize=12;
     if (screenWidth > 1080) {
         amount = 15;
-        basicSize = 12;
     } else if (screenWidth > 630) amount = 12;
     else {
         amount = 9;
@@ -257,6 +255,7 @@ function renderKeyWords() {
     const trandyKeywordsArr = Object.entries(getKeywords()).slice(0, amount);
     const trandyKeywords = Object.fromEntries(trandyKeywordsArr);
     let strHtml = '';
+
     for (const word in trandyKeywords) {
         const fontSize = trandyKeywords[word] >= 24 ? 24 : basicSize + trandyKeywords[word];
         strHtml += `<li class="keyword"><a href="#"  onclick="onClickSearchWord('${word}')" 
@@ -270,20 +269,18 @@ function onToggleMoreWords() {
     document.body.classList.toggle('more-menu');
 }
 
-function getRelevantImgs(allImgs) {
-    return allImgs.filter((img) => img.keywords.includes(gCurrSearchWord));
-}
 
-function onClickSearchWord(word) {
-    increaseWordRate(word);
-    gCurrSearchWord = word;
+function onClickSearchWord(searchWord) {
+    updateSearchWord(searchWord);
+    renderKeyWords()
     renderGallery();
 }
 
 function onSearchImg(ev) {
     ev.preventDefault();
-    gCurrSearchWord = document.querySelector('.search').value;
+    const searchWord = document.querySelector('.search').value;
     document.querySelector('.search').value = '';
+    updateSearchWord(searchWord);
     renderGallery();
 }
 

@@ -9,7 +9,7 @@
         <link rel="icon" type="image/png" href="img/logo-fav.png" />
     </head>
     <body onload="init()" class="show-gallery">
-        <div class="main-screen screen" onclick="onToggleMenu()"></div>
+        <div class="screen main-screen" onclick="onToggleMenu()"></div>
         <header class="main-header gradient-background">
             <div class="main-container flex align-center space-between">
                 <img class="logo" src="img/LOGO.png" />
@@ -20,8 +20,8 @@
                 </ul>
                 
                 <button class="menu-btn" onclick="onToggleMenu()"></button>
-                <div class="about-screen screen" onclick="onToggleAboutModal()"></div>
-                <div class="about-modal  flex column justify-center">
+                <div class=" screen about-screen" onclick="onToggleAboutModal()"></div>
+                <div class="about-modal flex column justify-center">
                     <button class="close" onclick="onToggleAboutModal()"">X</button>
                     <p>Created by 
                        <span>Ifat Braslavi.</span></p>
@@ -34,7 +34,7 @@
 
         <main class="main-container">
             
-            <section class="meme-editor main-container flex space-between wrap">
+            <section class="meme-editor main-container flex space-between wrap hide">
                 <div class="canvas-container-heilo round-corners">
                     <div class="canvas-container round-corners">
                         <canvas id="main-canvas" width="400" height="400"></canvas>
@@ -107,7 +107,7 @@
             </section>
             <div class="share-container"></div>
             <div class="download-share modal"></div>
-            <div class="modal-screen screen" onclick="onCloseDownloadShareModal()"></div>
+            <div class="screen modal-screen" onclick="onCloseDownloadShareModal()"></div>
 
             <div class="memes-container main-container" onclick="onToggleMemesMenu()">
                 <button class="close-memes close">X</button>

@@ -74,10 +74,16 @@ function removeSavedMeme(id) {
 }
 
 function getImgs() {
-    // const searchWord = gMeme.currSearchWord
-    // if(!searchWord) return gImgs;
-    // return gImgs.filter((img) => img.keywords.includes(searchWord));
-    return gImgs
+    const searchWord = gMeme.currSearchWord
+    if(!searchWord) return gImgs;
+    return gImgs.filter((img) => img.keywords.includes(searchWord));
+    // return gImgs
+}
+
+function updateSearchWord(searchWord){
+    if(searchWord==='all') searchWord = '';
+    gMeme.currSearchWord = searchWord;
+    increaseWordRate(searchWord)
 }
 
 function updateKeywords() {
@@ -96,8 +102,8 @@ function getKeywords() {
     return gKeywords;
 }
 
-function increaseWordRate(clickedWord) {
-    gKeywords[clickedWord]++;
+function increaseWordRate(searchWord) {
+    gKeywords[searchWord]++;
 }
 
 function initStickers() {
