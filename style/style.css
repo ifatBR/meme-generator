@@ -429,8 +429,13 @@ body.open-about .btn-about {
 
 .stroke {
     text-decoration: underline;
+
 }
 
+.stroke.on{
+    color:white;
+    -webkit-text-stroke: 1px black;
+}
 .ctrl-btn.color {
     position: relative;
 }

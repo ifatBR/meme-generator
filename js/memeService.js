@@ -74,16 +74,16 @@ function removeSavedMeme(id) {
 }
 
 function getImgs() {
-    const searchWord = gMeme.currSearchWord
-    if(!searchWord) return gImgs;
+    const searchWord = gMeme.currSearchWord;
+    if (!searchWord) return gImgs;
     return gImgs.filter((img) => img.keywords.includes(searchWord));
     // return gImgs
 }
 
-function updateSearchWord(searchWord){
-    if(searchWord==='all') searchWord = '';
+function updateSearchWord(searchWord) {
+    if (searchWord === 'all') searchWord = '';
     gMeme.currSearchWord = searchWord;
-    increaseWordRate(searchWord)
+    increaseWordRate(searchWord);
 }
 
 function updateKeywords() {
@@ -121,30 +121,33 @@ function getStickersCount() {
     return gMeme.stickers.length;
 }
 
-function addNewSticker(id, canvasW, canvasH) {
-    const newSticker = createNewSticker(id, canvasW, canvasH);
+function addNewSticker(id, canvasW, canvasH, ratio) {
+    const newSticker = createNewSticker(id, canvasW, canvasH, ratio);
     gMeme.stickers.push(newSticker);
     gMeme.selectedStickerIdx = gMeme.stickers.length - 1;
     gMeme.selectedLineIdx = -1;
 }
 
-function createNewSticker(id, canvasW, canvasH) {
+function createNewSticker(id, canvasW, canvasH, ratio) {
     const sticker = getStickerById(id);
+    const width = 80;
+    const height = width * ratio;
     const newSticker = {
         src: sticker.url,
         pos: {
-            x: canvasW / 2,
-            y: canvasH / 2,
+            x: canvasW / 2 -40,
+            y: canvasH / 2 - (height/2),
         },
-        width: 80,
-        height: 0,
+        width,
+        height,
+        scalePntPos: { x: 0, y: 0 },
     };
     return newSticker;
 }
 
-
-function setStickerH(idx, stickerH) {
-    gMeme.stickers[idx].height = stickerH;
+function setStickerH(idx, stickerH, ) {
+    const sticker = gMeme.stickers[idx]
+    sticker.height = stickerH;
 }
 
 function getStickerById(stickerId) {
@@ -174,7 +177,6 @@ function getImgSrc() {
     return gImgs[idx].url;
 }
 
-
 function changeSelectedSize(sizeDiff) {
     let idx = gMeme.selectedLineIdx;
     if (idx >= 0) {
@@ -193,8 +195,8 @@ function changeSelectedSize(sizeDiff) {
 
 function changeAlign(align, canvasW) {
     const idx = gMeme.selectedLineIdx;
-    if(idx<0) return;
-    const line =  gMeme.lines[idx];
+    if (idx < 0) return;
+    const line = gMeme.lines[idx];
     line.align = align;
     if (align === 'left') line.pos.x = 0 + 10;
     else if (align === 'right') line.pos.x = canvasW - 10;
@@ -203,21 +205,20 @@ function changeAlign(align, canvasW) {
 
 function changeColor(color) {
     const idx = gMeme.selectedLineIdx;
-    if(idx<0) return;
+    if (idx < 0) return;
     gMeme.lines[idx].color = color;
 }
 
-function updateSelectedLineFont(font){
+function updateSelectedLineFont(font) {
     const idx = gMeme.selectedLineIdx;
-    if(idx<0) return;
+    if (idx < 0) return;
     gMeme.lines[idx].font = font;
 }
 
-function toggleStroke(){
+function toggleStroke() {
     const idx = gMeme.selectedLineIdx;
-    if(idx<0) return;
+    if (idx < 0) return;
     gMeme.lines[idx].isStroke = !gMeme.lines[idx].isStroke;
-
 }
 
 function updateMemeTxt(txt, canvasW, canvasH, color, font) {
@@ -229,7 +230,7 @@ function updateMemeTxt(txt, canvasW, canvasH, color, font) {
 }
 
 function getSelectedLineTxt() {
-    if(gMeme.selectedLineIdx > 0) return gMeme.lines[gMeme.selectedLineIdx].txt;
+    if (gMeme.selectedLineIdx > 0) return gMeme.lines[gMeme.selectedLineIdx].txt;
     return '';
 }
 
@@ -237,12 +238,12 @@ function updateTxtWidth(idx, txtWidth) {
     gMeme.lines[idx].width = txtWidth;
 }
 
-function getBorderDims() {
+function setScalePnt(selected, pos) {
+    selected.scalePntPos = pos;
+}
+
+function getBorderParams() {
     let idx = gMeme.selectedLineIdx;
-    // let xStart;
-    // let yStart;
-    // let w;
-    // let h;
     if (idx >= 0) {
         const { pos, size, width, align } = gMeme.lines[idx];
         let widthOffst = -width;
@@ -252,26 +253,24 @@ function getBorderDims() {
         const yStart = pos.y - size;
         const w = width + 10;
         const h = size + 15;
-        return { xStart, yStart, w, h };
+        const scalePntPos = { x: xStart + w, y: yStart + h };
+        setScalePnt(gMeme.lines[idx], scalePntPos);
+        return { xStart, yStart, w, h, scalePntPos };
     }
     idx = gMeme.selectedStickerIdx;
     if (idx < 0) return;
-    const { pos, width, height} = gMeme.stickers[idx];
+    const { pos, width, height } = gMeme.stickers[idx];
     const xStart = pos.x;
     const yStart = pos.y;
     const w = width;
     const h = height;
-    return { xStart, yStart, w, h };
+    const scalePntPos = { x: xStart + w, y: yStart + h };
+    setScalePnt(gMeme.stickers[idx], scalePntPos);
+    return { xStart, yStart, w, h, scalePntPos };
 }
-
 
 function getImgIdxById() {
     return gImgs.findIndex((img) => gMeme.selectedImgId === img.id);
-}
-
-function getSelectedLineIdx() {
-    //?
-    return gMeme.selectedLineIdx;
 }
 
 function switchLines() {
@@ -295,8 +294,8 @@ function resetLines() {
 function addNewLine(canvasW, canvasH, color, font) {
     gMeme.selectedStickerIdx = -1;
     let linesCount = getLinesCount();
-    if (linesCount && !gMeme.lines[linesCount - 1].txt){
-        gMeme.selectedLineIdx =   linesCount - 1; 
+    if (linesCount && !gMeme.lines[linesCount - 1].txt) {
+        gMeme.selectedLineIdx = linesCount - 1;
         return;
     }
     const newLine = createNewLine(canvasW, canvasH, color, font);
@@ -321,6 +320,7 @@ function createNewLine(canvasW, canvasH, color, font) {
             x: canvasW / 2,
             y,
         },
+        scalePntPos: { x: 0, y: 0 },
     };
     return newLine;
 }
@@ -369,8 +369,8 @@ function moveSelectedByDragging(pos, gStartPos) {
     const dy = pos.y - gStartPos.y;
     let idx = gMeme.selectedLineIdx;
     if (idx >= 0) {
-        gMeme.lines[idx].pos.x+=dx;
-        gMeme.lines[idx].pos.y+=dy;
+        gMeme.lines[idx].pos.x += dx;
+        gMeme.lines[idx].pos.y += dy;
 
         return;
     }
@@ -380,7 +380,20 @@ function moveSelectedByDragging(pos, gStartPos) {
     gMeme.stickers[idx].pos.y += dy;
 }
 
-function getClickedLineIdx(clickedPos) {
+function scaleSelectedByDragging(pos, startPos) {
+    const dx = pos.x - startPos.x;
+    let idx = gMeme.selectedLineIdx;
+    if (idx >= 0) {
+        gMeme.lines[idx].size += dx;
+        return;
+    }
+    idx = gMeme.selectedStickerIdx;
+    gMeme.stickers[idx].width += dx;
+    gMeme.stickers[idx].height += dx;
+}
+
+function getClickedLineParams(clickedPos) {
+    const pntRadius = 7;
     const idx = gMeme.lines.findIndex((line) => {
         let offset = 0;
         const { pos, align, width, size } = line;
@@ -389,29 +402,65 @@ function getClickedLineIdx(clickedPos) {
 
         return (
             pos.x - width / 2 + offset < clickedPos.x &&
-            pos.x + width / 2 + offset > clickedPos.x &&
+            pos.x + width / 2 + offset + pntRadius > clickedPos.x &&
             pos.y - size - 5 < clickedPos.y &&
-            pos.y + 15 > clickedPos.y
+            pos.y + 15 + pntRadius > clickedPos.y
         );
     });
-    return idx;
+    if (idx < 0) return { idx, isScaling: false };
+    const isScaling = isScalePntClicked(gMeme.lines[idx], clickedPos);
+    return { idx, isScaling };
 }
 
-function geClickedStickerIdx(clickedPos) {
+function getClickedStickerParams(clickedPos) {
+    const pntRadius = 7;
+
     const idx = gMeme.stickers.findIndex((sticker) => {
         const { pos, width, height } = sticker;
-        return pos.x < clickedPos.x && pos.x + width > clickedPos.x && pos.y < clickedPos.y && pos.y + height > clickedPos.y;
+        return (
+            pos.x < clickedPos.x &&
+            pos.x + width + pntRadius > clickedPos.x &&
+            pos.y < clickedPos.y &&
+            pos.y + height + pntRadius > clickedPos.y
+        );
     });
-    return idx;
+    if (idx < 0) return { idx, isScaling: false };
+    const isScaling = isScalePntClicked(gMeme.stickers[idx], clickedPos);
+    return { idx, isScaling };
 }
 
-function isAnythingClicked(pos) {
-    const clickedLineIdx = getClickedLineIdx(pos);
-    gMeme.selectedLineIdx = clickedLineIdx;
-    const clickedStickerIdx = geClickedStickerIdx(pos);
-    gMeme.selectedStickerIdx  = clickedStickerIdx;
-    if(clickedLineIdx || clickedStickerIdx) return true;
-    return false;
+function isScalePntClicked(selected, clickedPos) {
+    const { x, y } = selected.scalePntPos;
+    const offset = 2;
+    const pntRadius = 10;
+    return (
+        x - offset - pntRadius < clickedPos.x &&
+        x + offset + pntRadius > clickedPos.x &&
+        y - offset - pntRadius < clickedPos.y &&
+        y + offset + pntRadius > clickedPos.y
+    );
+}
+
+function isDraggingOrScaling(pos) {
+    const clickedLineParams = getClickedLineParams(pos);
+    let idx = clickedLineParams.idx;
+    let isScaling = clickedLineParams.isScaling;
+
+    if (idx >= 0) {
+        gMeme.selectedLineIdx = idx;
+        gMeme.selectedStickerIdx = -1;
+
+        return { isDragging: !isScaling, isScaling };
+    }
+
+    const clickedStickerParams = getClickedStickerParams(pos);
+    idx = clickedStickerParams.idx;
+    isScaling = clickedStickerParams.isScaling;
+
+    if (idx < 0) return false;
+    gMeme.selectedStickerIdx = idx;
+    gMeme.selectedLineIdx = -1;
+    return { isDragging: !isScaling, isScaling };
 }
 
 function resetSelections() {

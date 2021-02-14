@@ -9,6 +9,7 @@ var gIsDownload = false;
 var gCurrColor = '#cc2e2e';
 var gCurrRatio = 1;
 var gIsDragging = false;
+var gIsScaling = false;
 var gStartPos;
 
 function init() {
@@ -37,6 +38,8 @@ function onMoveSelected(moveDiff) {
 
 function onAddLine() {
     addNewLine(gElCanvas.width, gElCanvas.height, gCurrColor, gCurrFont);
+    document.querySelector('.stroke').classList.add('on');
+
     emptyMemeTxtInput();
     renderCanvas();
 }
@@ -45,7 +48,6 @@ function onDelete() {
     deleteCurr();
     renderCanvas();
 }
-
 
 function onEditMemeText(elTextInput) {
     const txt = elTextInput.value;
@@ -78,6 +80,7 @@ function onChangeFont(elSelectFont) {
 }
 
 function onToggleStroke() {
+    document.querySelector('.stroke').classList.toggle('on');
     toggleStroke();
     renderCanvas();
 }
@@ -95,7 +98,11 @@ function renderStickers() {
 }
 
 function onAddSticker(stickerId) {
-    addNewSticker(stickerId, gElCanvas.width, gElCanvas.height);
+    const sticker = getStickerById(stickerId);
+    const img = new Image();
+    img.src = sticker.url;
+    const ratio = (img.height / img.width);    
+    addNewSticker(stickerId, gElCanvas.width, gElCanvas.height, ratio);
     emptyMemeTxtInput();
     renderCanvas();
 }
@@ -146,26 +153,31 @@ function addMemesText() {
 function addMemesStickers() {
     const currStickers = getMemeStickers();
     currStickers.forEach((sticker, idx) => {
-        const { src, width, pos } = sticker;
+        const { src, width, height,pos } = sticker;
         const img = new Image();
         img.src = src;
-        const stickerH = (img.height / img.width) * width;
-        setStickerH(idx, stickerH);
-        gCtx.drawImage(img, pos.x, pos.y, width, stickerH);
+        gCtx.drawImage(img, pos.x, pos.y, width, height);
     });
 }
 
 function showFocusBorder() {
-    const borderDims = getBorderDims();
-    if(!borderDims)return;
-    const {xStart, yStart, w, h} = getBorderDims();
+    const borderParams = getBorderParams();
+    if (!borderParams) return;
+    const { xStart, yStart, w, h, scalePntPos} = borderParams;
     gCtx.beginPath();
     gCtx.rect(xStart, yStart, w, h);
     gCtx.lineWidth = 2;
     gCtx.strokeStyle = 'white';
     gCtx.stroke();
+    showScalePnt(scalePntPos);
 }
 
+function showScalePnt(pos) {
+    gCtx.beginPath();
+    gCtx.arc(pos.x,pos.y,7,0,2*Math.PI)
+    gCtx.fillStyle = '#0f9ab4';
+    gCtx.fill();
+}
 
 function resizeCanvas() {
     const elContainerHeilo = document.querySelector('.canvas-container-heilo');
@@ -195,7 +207,7 @@ function renderSavedMemes() {
     document.querySelector('.memes').innerHTML = strHtml;
 }
 
-function onToggleAboutModal(){
+function onToggleAboutModal() {
     if (document.body.classList.contains('open-menu')) onToggleMenu();
     document.body.classList.toggle('open-about');
 }
@@ -244,7 +256,7 @@ function renderWordsList() {
 function renderKeyWords() {
     const screenWidth = window.innerWidth;
     let amount;
-    let basicSize=12;
+    let basicSize = 12;
     if (screenWidth > 1080) {
         amount = 15;
     } else if (screenWidth > 630) amount = 12;
@@ -269,10 +281,9 @@ function onToggleMoreWords() {
     document.body.classList.toggle('more-menu');
 }
 
-
 function onClickSearchWord(searchWord) {
     updateSearchWord(searchWord);
-    renderKeyWords()
+    renderKeyWords();
     renderGallery();
 }
 
@@ -327,8 +338,10 @@ function addTouchListeners() {
 }
 
 function onDown(ev) {
-    const pos = getEvPos(ev);    
-    gIsDragging = isAnythingClicked(pos);
+    const pos = getEvPos(ev);
+    const {isDragging, isScaling} = isDraggingOrScaling(pos);
+    gIsDragging = isDragging;
+    gIsScaling = isScaling;
     renderCanvas();
     updateMemeTxtInput();
     gStartPos = pos;
@@ -336,17 +349,22 @@ function onDown(ev) {
 }
 
 function onMove(ev) {
+    if(!gIsDragging && !gIsScaling) return;
+    const pos = getEvPos(ev);
     if (gIsDragging) {
-        const pos = getEvPos(ev);
         moveSelectedByDragging(pos, gStartPos);
         gStartPos = pos;
         renderCanvas();
-    }  
+        return
+    }
+    scaleSelectedByDragging(pos, gStartPos);
+    gStartPos = pos;
+    renderCanvas();
+
 }
 
-
 function onUp() {
-    gIsDragging = false;
+    gIsDragging = gIsScaling = false;
     document.body.style.cursor = 'grab';
 }
 
@@ -374,7 +392,6 @@ function onDownloadImg() {
     resetSelections();
     renderCanvas();
     setTimeout(setDownloadLink, 700);
-
 }
 
 function setDownloadLink() {
@@ -442,16 +459,16 @@ function onClickSavedMeme(ev, elImg) {
     toggleModalScreen(strHtml);
 }
 
-function onDeleteMeme(memeId){
+function onDeleteMeme(memeId) {
     toggleModalScreen();
     const strHtml = `<h2 class="btn start-action">Are you sure?</h2> <div class="modal-btns-container flex space-between"><button onClick="onRemoveMeme('${memeId}')">Yes</button> <button onClick="onCloseDownloadShareModal()">No!</button></div>`;
-    toggleModalScreen(strHtml)
+    toggleModalScreen(strHtml);
 }
 
-function onRemoveMeme(id){
+function onRemoveMeme(id) {
     removeSavedMeme(id);
     renderSavedMemes();
-    onCloseDownloadShareModal()
+    onCloseDownloadShareModal();
 }
 
 function onCloseDownloadShareModal() {
@@ -462,7 +479,6 @@ function toggleModalScreen(strHtml) {
     if (strHtml) document.querySelector('.download-share.modal').innerHTML = strHtml;
     document.body.classList.toggle('open-modal');
 }
-
 
 function onImgInput(ev) {
     loadImgFromInput(ev);
