@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Memegen</title>
         <link rel="stylesheet" href="style/style.css" />
-        <link rel="icon" type="image/png" href="img/LOGO-fav.png" />
+        <link rel="icon" type="image/png" href="img/logo-fav.png" />
     </head>
     <body onload="init()" class="show-gallery">
         <div class="main-screen screen" onclick="onToggleMenu()"></div>
@@ -34,7 +34,7 @@
 
         <main class="main-container">
             
-            <section class="meme-editor main-container flex space-between wrap hide">
+            <section class="meme-editor main-container flex space-between wrap">
                 <div class="canvas-container-heilo round-corners">
                     <div class="canvas-container round-corners">
                         <canvas id="main-canvas" width="400" height="400"></canvas>
@@ -44,10 +44,10 @@
                     <input type="text" class="meme-txt" name="meme-txt" oninput="onEditMemeText(this)" />
                     <div class="ctrl-btns flex justify-center">
                         <button class="ctrl-btn three-d fa-btn switch" onclick="onSwitchLines()"></button>
-                        <button class="ctrl-btn three-d fa-btn up" onclick="onMoveCurrElm(-5)"></button>
-                        <button class="ctrl-btn three-d fa-btn down" onclick="onMoveCurrElm(5)"></button>
+                        <button class="ctrl-btn three-d fa-btn up" onclick="onMoveSelected(-5)"></button>
+                        <button class="ctrl-btn three-d fa-btn down" onclick="onMoveSelected(5)"></button>
                         <button class="ctrl-btn three-d fa-btn add-ln" onclick="onAddLine()"></button>
-                        <button class="ctrl-btn three-d fa-btn delete" onclick="onDeleteLine()"></button>
+                        <button class="ctrl-btn three-d fa-btn delete" onclick="onDelete()"></button>
                     </div>
 
                     <div class="edit-font grid">
@@ -76,9 +76,10 @@
                         onsubmit="uploadImg(this, event)"
                     >
                         <input name="img" id="imgData" type="hidden" />
+                        <a class="share-link" id="share-link" href="#" donload=AwsomemeAAA></a>
                         <button class="btn three-d btn-share share" type="submit">Publish</button>
                         <a class="btn three-d btn-share save" href="#" onclick="onSaveImg()">Save</a>
-                        <a class="btn three-d btn-share download" href="#" onclick="onDownloadImg()">Download</a>
+                        <a class="btn three-d btn-share download" href="#" onclick="onDownloadImg(this,event)" download="a">Download</a>
                     </form>
                     <div class="stickers-container">
                         <button class="btn-browse fa-btn browse-left"onclick="onChanePage(-1)"></button>
@@ -94,7 +95,6 @@
                     <form class="search-form" onchange="onSearchImg(event)">
                         <input list="search-words" class="search" name="search" placeholder="Search" />
                         <datalist id="search-words">
-                            <option value="funny"></option>
                         </datalist>
                         <button class="search-btn"></button>
                     </form>
@@ -113,6 +113,7 @@
                 <button class="close-memes close">X</button>
                 <div class="memes grid align-center justify-center"></div>
             </div>
+            <a href='https://pngtree.com/so/champion' style="font-size:0.6em;">pngs from pngtree.com</a>
         </main>
         <script src="js/utils.js"></script>
         <script src="js/storageService.js"></script>

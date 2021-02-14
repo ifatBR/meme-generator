@@ -11,8 +11,10 @@ var gKeywords = {
 };
 
 var gMeme = {
+    currSearchWord: '',
     selectedImgId: 5,
-    selectedLineIdx: 0,
+    selectedLineIdx: -1,
+    selectedStickerIdx: -1,
     lines: [],
     stickers: [],
 };
@@ -65,14 +67,17 @@ function addToSavedMemes(imgContent) {
     return saveToStorage(SAVED_MEMES_KEY, gSavedMemes);
 }
 
-function removeSavedMeme(id){
+function removeSavedMeme(id) {
     const idx = gSavedMemes.findIndex((savedMeme) => savedMeme.id === id);
-    gSavedMemes.splice(idx,1);
+    gSavedMemes.splice(idx, 1);
     saveToStorage(SAVED_MEMES_KEY, gSavedMemes);
 }
 
-function getImages() {
-    return gImgs;
+function getImgs() {
+    // const searchWord = gMeme.currSearchWord
+    // if(!searchWord) return gImgs;
+    // return gImgs.filter((img) => img.keywords.includes(searchWord));
+    return gImgs
 }
 
 function updateKeywords() {
@@ -96,7 +101,7 @@ function increaseWordRate(clickedWord) {
 }
 
 function initStickers() {
-    for (var i = 1; i <= 12; i++) {
+    for (var i = 1; i <= 15; i++) {
         gStickers.push({ id: makeId(), url: `img/stickers/${i}.png` });
     }
 }
@@ -110,22 +115,27 @@ function getStickersCount() {
     return gMeme.stickers.length;
 }
 
-function createNewSticker(stickerId, canvaW, canvasH) {
-    const sticker = getStickerById(stickerId);
-    gMeme.stickers.push({
+function addNewSticker(id, canvasW, canvasH) {
+    const newSticker = createNewSticker(id, canvasW, canvasH);
+    gMeme.stickers.push(newSticker);
+    gMeme.selectedStickerIdx = gMeme.stickers.length - 1;
+    gMeme.selectedLineIdx = -1;
+}
+
+function createNewSticker(id, canvasW, canvasH) {
+    const sticker = getStickerById(id);
+    const newSticker = {
         src: sticker.url,
         pos: {
-            x: canvaW / 2,
+            x: canvasW / 2,
             y: canvasH / 2,
         },
         width: 80,
         height: 0,
-    });
+    };
+    return newSticker;
 }
 
-function getCurrStickerObjByIdx(idx) {
-    return gMeme.stickers[idx];
-}
 
 function setStickerH(idx, stickerH) {
     gMeme.stickers[idx].height = stickerH;
@@ -145,10 +155,10 @@ function changeStickersPage(pageDiff) {
     else if (gStickersPageIdx < 0) gStickersPageIdx = Math.ceil(gStickers.length / STICKERS_PAGE_SIZE) - 1;
 }
 
-function setMemeImage(id, imgSrc) {
-    if (id < 0){
+function setMemeImg(id, imgSrc) {
+    if (id < 0) {
         id = makeId();
-        gImgs.push({id, url:imgSrc, keywords:['personal']})
+        gImgs.push({ id, url: imgSrc, keywords: ['personal'] });
     }
     gMeme.selectedImgId = id;
 }
@@ -158,45 +168,113 @@ function getImgSrc() {
     return gImgs[idx].url;
 }
 
-function getLnObjectByIdx(lnIdx) {
-    const idx = getImgIdxById();
-    return gMeme.lines[lnIdx];
-}
 
-function changeElmSize(idx, sizeDiff, isLine) {
-    if (isLine) {
-        const lnObj = getLnObjectByIdx(idx);
-        if ((sizeDiff < 0 && lnObj.size < 20) || (sizeDiff > 0 && lnObj.size > 80)) return;
-        lnObj.size += sizeDiff;
+function changeSelectedSize(sizeDiff) {
+    let idx = gMeme.selectedLineIdx;
+    if (idx >= 0) {
+        const line = gMeme.lines[idx];
+        if ((sizeDiff < 0 && line.size < 20) || (sizeDiff > 0 && line.size > 80)) return;
+        gMeme.lines[idx].size += sizeDiff * 2;
         return;
     }
-    const stickerObj = getCurrStickerObjByIdx(idx);
-    if ((sizeDiff < 0 && stickerObj.width < 30) || (sizeDiff > 0 && stickerObj.width > 150)) return;
-    stickerObj.width += sizeDiff;
+
+    idx = gMeme.selectedStickerIdx;
+    if (idx < 0) return;
+    const sticker = gMeme.stickers[idx];
+    if ((sizeDiff < 0 && sticker.width < 30) || (sizeDiff > 0 && sticker.width > 300)) return;
+    sticker.width += sizeDiff * 3;
 }
 
-function changeAlign(lnIdx, align, canvasWidth) {
-    const lnObj = getLnObjectByIdx(lnIdx);
-    lnObj.align = align;
-    if (align === 'left') lnObj.pos.x = 0 + 10;
-    else if (align === 'right') lnObj.pos.x = canvasWidth - 10;
-    else lnObj.pos.x = canvasWidth / 2;
+function changeAlign(align, canvasW) {
+    const idx = gMeme.selectedLineIdx;
+    if(idx<0) return;
+    const line =  gMeme.lines[idx];
+    line.align = align;
+    if (align === 'left') line.pos.x = 0 + 10;
+    else if (align === 'right') line.pos.x = canvasW - 10;
+    else line.pos.x = canvasW / 2;
 }
 
-function changeColor(lnIdx, color) {
-    getLnObjectByIdx(lnIdx).color = color;
+function changeColor(color) {
+    const idx = gMeme.selectedLineIdx;
+    if(idx<0) return;
+    gMeme.lines[idx].color = color;
 }
 
-function updateMemeTxt(lnIdx, txt) {
-    getLnObjectByIdx(lnIdx).txt = txt;
+function updateSelectedLineFont(font){
+    const idx = gMeme.selectedLineIdx;
+    if(idx<0) return;
+    gMeme.lines[idx].font = font;
 }
 
-function updateTxtWidth(lnIdx, txtWidth) {
-    getLnObjectByIdx(lnIdx).width = txtWidth;
+function toggleStroke(){
+    const idx = gMeme.selectedLineIdx;
+    if(idx<0) return;
+    gMeme.lines[idx].isStroke = !gMeme.lines[idx].isStroke;
+
 }
+
+function updateMemeTxt(txt, canvasW, canvasH, color, font) {
+    if (gMeme.selectedLineIdx < 0) {
+        addNewLine(canvasW, canvasH, color, font);
+        gMeme.selectedLineIdx = gMeme.lines.length - 1;
+    }
+    gMeme.lines[gMeme.selectedLineIdx].txt = txt;
+}
+
+function getSelectedLineTxt() {
+    if(gMeme.selectedLineIdx > 0) return gMeme.lines[gMeme.selectedLineIdx].txt;
+    return '';
+}
+
+function updateTxtWidth(idx, txtWidth) {
+    gMeme.lines[idx].width = txtWidth;
+}
+
+function getBorderDims() {
+    let idx = gMeme.selectedLineIdx;
+    // let xStart;
+    // let yStart;
+    // let w;
+    // let h;
+    if (idx >= 0) {
+        const { pos, size, width, align } = gMeme.lines[idx];
+        let widthOffst = -width;
+        if (align === 'left') widthOffst = 0;
+        else if (align === 'center') widthOffst = -width / 2;
+        const xStart = pos.x + widthOffst - 5;
+        const yStart = pos.y - size;
+        const w = width + 10;
+        const h = size + 15;
+        return { xStart, yStart, w, h };
+    }
+    idx = gMeme.selectedStickerIdx;
+    if (idx < 0) return;
+    const { pos, width, height} = gMeme.stickers[idx];
+    const xStart = pos.x;
+    const yStart = pos.y;
+    const w = width;
+    const h = height;
+    return { xStart, yStart, w, h };
+}
+
 
 function getImgIdxById() {
     return gImgs.findIndex((img) => gMeme.selectedImgId === img.id);
+}
+
+function getSelectedLineIdx() {
+    //?
+    return gMeme.selectedLineIdx;
+}
+
+function switchLines() {
+    if (!gMeme.lines.length) return;
+    if (gMeme.selectedLineIdx === gMeme.lines.length - 1) {
+        gMeme.selectedLineIdx = 0;
+        return;
+    } //Add switch to sticker
+    gMeme.selectedLineIdx++;
 }
 
 function getLinesCount() {
@@ -208,51 +286,98 @@ function resetLines() {
     gMeme.stickers = [];
 }
 
-function createNewLine(canvasW, canvasH, currColor, currFont) {
-    const lnsCount = getLinesCount();
-    if (gMeme.lines[lnsCount - 1]?.txt === '') return;
+function addNewLine(canvasW, canvasH, color, font) {
+    gMeme.selectedStickerIdx = -1;
+    let linesCount = getLinesCount();
+    if (linesCount && !gMeme.lines[linesCount - 1].txt){
+        gMeme.selectedLineIdx =   linesCount - 1; 
+        return;
+    }
+    const newLine = createNewLine(canvasW, canvasH, color, font);
+    gMeme.lines.push(newLine);
+    gMeme.selectedLineIdx = linesCount++;
+}
+
+function createNewLine(canvasW, canvasH, color, font) {
     let y = 40;
-    if (lnsCount === 1) y = canvasH - 40;
-    else if (lnsCount > 0) y = canvasH / 2;
-    gMeme.lines.push({
+    const linesCount = gMeme.lines.length;
+    if (linesCount === 1) y = canvasH - 40;
+    else if (linesCount > 0) y = canvasH / 2;
+    const newLine = {
         txt: '',
         width: 0,
         size: 40,
         align: 'center',
         isStroke: true,
-        color: currColor,
-        font: currFont,
+        color,
+        font,
         pos: {
             x: canvasW / 2,
             y,
         },
-    });
+    };
+    return newLine;
 }
 
-function deleteElm(idx, isLine) {
-    if (isLine) {
+function deleteCurr() {
+    let idx = gMeme.selectedLineIdx;
+    if (idx >= 0) {
         gMeme.lines.splice(idx, 1);
-        return;
-    } else gMeme.stickers.splice(idx, 1);
+        if (gMeme.lines.length) {
+            gMeme.selectedLineIdx = gMeme.lines.length - 1;
+            return;
+        }
+        gMeme.selectedLineIdx = -1;
+        gMeme.selectedStickerIdx = gMeme.stickers.length - 1;
+    }
+
+    idx = gMeme.selectedStickerIdx;
+    if (idx >= 0) {
+        gMeme.stickers.splice(idx, 1);
+        if (gMeme.stickers.length) {
+            gMeme.selectedStickerIdx = gMeme.stickers.length - 1;
+            return;
+        }
+    }
+    gMeme.selectedStickerIdx = -1;
+    gMeme.selectedLineIdx = gMeme.lines.length - 1;
 }
 
 function getAllLines() {
     return gMeme.lines;
 }
 
-function moveElmY(idx, moveDiff, isLine) {
-    if (isLine) {
-        getLnObjectByIdx(idx).pos.y += moveDiff;
+function moveSelectedYAxis(moveDiff) {
+    let idx = gMeme.selectedLineIdx;
+    moveDiff *= 3;
+    if (idx >= 0) {
+        gMeme.lines[idx].pos.y += moveDiff;
         return;
     }
+    idx = gMeme.selectedStickerIdx;
+    if (idx >= 0) gMeme.stickers[idx].pos.y += moveDiff;
+}
 
-    getCurrStickerObjByIdx(idx).pos.y += moveDiff;
+function moveSelectedByDragging(pos, gStartPos) {
+    const dx = pos.x - gStartPos.x;
+    const dy = pos.y - gStartPos.y;
+    let idx = gMeme.selectedLineIdx;
+    if (idx >= 0) {
+        gMeme.lines[idx].pos.x+=dx;
+        gMeme.lines[idx].pos.y+=dy;
+
+        return;
+    }
+    idx = gMeme.selectedStickerIdx;
+    if (idx < 0) return;
+    gMeme.stickers[idx].pos.x += dx;
+    gMeme.stickers[idx].pos.y += dy;
 }
 
 function getClickedLineIdx(clickedPos) {
-    const idx = gMeme.lines.findIndex((ln) => {
+    const idx = gMeme.lines.findIndex((line) => {
         let offset = 0;
-        const { pos, align, width, size } = ln;
+        const { pos, align, width, size } = line;
         if (align === 'left') offset = width / 2;
         else if (align === 'right') offset = -width / 2;
 
@@ -272,4 +397,18 @@ function geClickedStickerIdx(clickedPos) {
         return pos.x < clickedPos.x && pos.x + width > clickedPos.x && pos.y < clickedPos.y && pos.y + height > clickedPos.y;
     });
     return idx;
+}
+
+function isAnythingClicked(pos) {
+    const clickedLineIdx = getClickedLineIdx(pos);
+    gMeme.selectedLineIdx = clickedLineIdx;
+    const clickedStickerIdx = geClickedStickerIdx(pos);
+    gMeme.selectedStickerIdx  = clickedStickerIdx;
+    if(clickedLineIdx || clickedStickerIdx) return true;
+    return false;
+}
+
+function resetSelections() {
+    gMeme.selectedLineIdx = -1;
+    gMeme.selectedStickerIdx = -1;
 }
