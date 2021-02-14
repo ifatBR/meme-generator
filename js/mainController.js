@@ -370,29 +370,19 @@ function getEvPos(ev) {
 
 // on submit call to this function
 
-function onDownloadImg(elLink,ev) {
-    ev.preventDefault()
+function onDownloadImg() {
     resetSelections();
     renderCanvas();
-    // setTimeout(setDownloadLink, 700);
-    setTimeout(() => {
-        const imgContent = gElCanvas.toDataURL('image/jpeg');
-        elLink.href = imgContent;
-        let elShareLink = document.querySelector('#share-link');
-        elShareLink.href = imgContent;
-        elShareLink.click();
-        // const strHtml = `<a href="${imgContent}" class="btn start-action" download="Awesomeme" 
-        // onclick="onCloseDownloadShareModal()">Click to download</a>`;
-        // toggleModalScreen(strHtml);
-    }, 700);
+    setTimeout(setDownloadLink, 700);
+
 }
 
-// function setDownloadLink() {
-//     const imgContent = gElCanvas.toDataURL('image/jpeg');
-//     const strHtml = `<a href="${imgContent}" class="btn start-action" download="Awesomeme" 
-//     onclick="onCloseDownloadShareModal()">Click to download</a>`;
-//     toggleModalScreen(strHtml);
-// }
+function setDownloadLink() {
+    const imgContent = gElCanvas.toDataURL('image/jpeg');
+    const strHtml = `<a href="${imgContent}" class="btn start-action" download="Awesomeme" 
+    onclick="onCloseDownloadShareModal()">Click to download</a>`;
+    toggleModalScreen(strHtml);
+}
 
 function uploadImg(elForm, ev) {
     ev.preventDefault();
